@@ -1,0 +1,5 @@
+C:\Users\Administrator\Desktop\新建文件夹\WinForms_FGUI.exe
+C:\Users\Administrator\Desktop\新建文件夹\WinForms_FGUI.dll
+C:\Users\Administrator\Desktop\新建文件夹\WinForms_FGUI.deps.json
+C:\Users\Administrator\Desktop\新建文件夹\WinForms_FGUI.runtimeconfig.json
+C:\Users\Administrator\Desktop\新建文件夹\WinForms_FGUI.pdb
