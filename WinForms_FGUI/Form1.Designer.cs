@@ -52,7 +52,7 @@
             // 
             // btnSearch
             // 
-            this.btnSearch.Location = new System.Drawing.Point(552, 75);
+            this.btnSearch.Location = new System.Drawing.Point(604, 75);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(104, 25);
             this.btnSearch.TabIndex = 1;
@@ -70,7 +70,7 @@
             // 
             // btnPackage
             // 
-            this.btnPackage.Location = new System.Drawing.Point(221, 38);
+            this.btnPackage.Location = new System.Drawing.Point(328, 38);
             this.btnPackage.Name = "btnPackage";
             this.btnPackage.Size = new System.Drawing.Size(77, 24);
             this.btnPackage.TabIndex = 3;
@@ -80,7 +80,7 @@
             // 
             // btnRef
             // 
-            this.btnRef.Location = new System.Drawing.Point(304, 38);
+            this.btnRef.Location = new System.Drawing.Point(411, 38);
             this.btnRef.Name = "btnRef";
             this.btnRef.Size = new System.Drawing.Size(102, 24);
             this.btnRef.TabIndex = 4;
@@ -90,7 +90,7 @@
             // 
             // fguiPKGTxt
             // 
-            this.fguiPKGTxt.Location = new System.Drawing.Point(446, 76);
+            this.fguiPKGTxt.Location = new System.Drawing.Point(498, 76);
             this.fguiPKGTxt.Name = "fguiPKGTxt";
             this.fguiPKGTxt.Size = new System.Drawing.Size(100, 23);
             this.fguiPKGTxt.TabIndex = 5;
@@ -100,7 +100,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(267, 79);
+            this.label1.Location = new System.Drawing.Point(319, 79);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(175, 17);
             this.label1.TabIndex = 6;
@@ -128,7 +128,7 @@
             // 
             this.ignoreTxt.Location = new System.Drawing.Point(55, 38);
             this.ignoreTxt.Name = "ignoreTxt";
-            this.ignoreTxt.Size = new System.Drawing.Size(160, 23);
+            this.ignoreTxt.Size = new System.Drawing.Size(267, 23);
             this.ignoreTxt.TabIndex = 9;
             this.ignoreTxt.Text = "Common;Items;Font";
             // 
@@ -145,7 +145,7 @@
             // 
             this.ignoreIconCommon.Location = new System.Drawing.Point(91, 76);
             this.ignoreIconCommon.Name = "ignoreIconCommon";
-            this.ignoreIconCommon.Size = new System.Drawing.Size(160, 23);
+            this.ignoreIconCommon.Size = new System.Drawing.Size(222, 23);
             this.ignoreIconCommon.TabIndex = 11;
             this.ignoreIconCommon.Text = "Items;Common";
             // 

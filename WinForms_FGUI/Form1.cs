@@ -91,9 +91,16 @@ namespace WinForms_FGUI
             string[] xmlFiles = Directory.GetFiles(directoryPath, "*.xml", SearchOption.AllDirectories); // 获取以.xml为后缀的所有文件
             string pkgPattern = @"pkg=""([^""]+)""";
             string urlPattern = @"url=""([^""]+)""";//url="ui://m9pqa398gbxfe9l" 
+            string iconPattern = @"icon=""([^""]+)""";//icon="ui://m9pqa398gbxfe9l" 
+            string fontPattern = @"font=""([^""]+)""";//font="ui://m9pqa398gbxfe9l" 
+            string defaultPattern = @"defaultItem=""([^""]+)""";//defaultItem="ui://m9pqa398gbxfe9l" 
             string[] strTxt;
             foreach (string file in xmlFiles)
             {
+                //if (file.Contains("DialogFailView"))
+                //{
+                //    Console.WriteLine("测试某个页面依赖");
+                //}
                 if (file.Contains("package.xml") == false)
                 {
                     strTxt = File.ReadAllLines(file);
@@ -115,22 +122,58 @@ namespace WinForms_FGUI
                     {
                         string packageUId = Regex.Match(strTxt[i], pkgPattern).Groups[1].Value;//某包id
                         string urlUIAll = Regex.Match(strTxt[i], urlPattern).Groups[1].Value;//url全路径
+                        string iconUIAll = Regex.Match(strTxt[i], iconPattern).Groups[1].Value;//url全路径
+                        string fontUIAll = Regex.Match(strTxt[i], fontPattern).Groups[1].Value;//url全路径
+                        string defaultUIAll = Regex.Match(strTxt[i], defaultPattern).Groups[1].Value;//url全路径
 
                         if (string.IsNullOrEmpty(packageUId) == false)
                         {
                             var packageName = "";
-                            mPackageUIdNameDic.TryGetValue(packageUId, out packageName);
+                            mPackageUIdNameDic.TryGetValue(packageUId, out packageName);                            
                             //var packageName = mPackageUIdNameDic.ContainsKey(packageUId)? mPackageUIdNameDic[packageUId]:"";//某包名字
                             if (string.IsNullOrEmpty(packageName) == false && mCommonNameUIdDic.ContainsKey(packageName) == false && packageName != selfPack)
                             {
                                 AddDicTry(selfPack, xmlName, packageName);
                             }
                         }
-                        else if (string.IsNullOrEmpty(urlUIAll) == false)
+                        else if (string.IsNullOrEmpty(urlUIAll) == false)//懒 得 去提取了      
                         {
-                            foreach (var item in mNoneCommonUIdNameDic)////key=包id,,,value=包名字
+                            foreach (var item in mNoneCommonUIdNameDic)//key=包id,,,value=包名字
                             {
                                 if (urlUIAll.Contains(item.Key) && item.Value != selfPack)
+                                {
+                                    AddDicTry(selfPack, xmlName, item.Value);
+                                    break;
+                                }
+                            }
+                        }
+                        else if (string.IsNullOrEmpty(iconUIAll) == false)
+                        {
+                            foreach (var item in mNoneCommonUIdNameDic)//key=包id,,,value=包名字
+                            {
+                                if (iconUIAll.Contains(item.Key) && item.Value != selfPack)
+                                {
+                                    AddDicTry(selfPack, xmlName, item.Value);
+                                    break;
+                                }
+                            }
+                        }
+                        else if (string.IsNullOrEmpty(defaultUIAll) == false)
+                        {
+                            foreach (var item in mNoneCommonUIdNameDic)//key=包id,,,value=包名字
+                            {
+                                if (defaultUIAll.Contains(item.Key) && item.Value != selfPack)
+                                {
+                                    AddDicTry(selfPack, xmlName, item.Value);
+                                    break;
+                                }
+                            }
+                        }
+                        else if (string.IsNullOrEmpty(fontUIAll) == false)
+                        {
+                            foreach (var item in mNoneCommonUIdNameDic)//key=包id,,,value=包名字
+                            {
+                                if (fontUIAll.Contains(item.Key) && item.Value != selfPack)
                                 {
                                     AddDicTry(selfPack, xmlName, item.Value);
                                     break;
