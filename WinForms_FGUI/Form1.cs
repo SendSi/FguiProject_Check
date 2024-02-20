@@ -1,8 +1,5 @@
 using System.Text;
 using System.Text.RegularExpressions;
-using System.IO;
-using System.Security.Cryptography.X509Certificates;
-using System.Linq;
 
 namespace WinForms_FGUI
 {
@@ -13,6 +10,7 @@ namespace WinForms_FGUI
             InitializeComponent();
         }
         string mFGUIPath = @"C:/fguiPath.txt";
+        string mFGUILog = @"C:/fguiLog.txt";
         Dictionary<string, string> mPackageUIdNameDic = new Dictionary<string, string>();//key=包id,,,value=包名字
         Dictionary<string, List<string>> mXmlListDic = new Dictionary<string, List<string>>();
         Dictionary<string, string> mCommonNameUIdDic;// = new Dictionary<string, string>() { { "Common", "" }, { "Items", "" }, { "Font", "" }, };//公有包  key=包名字,,,value=包id
@@ -94,13 +92,15 @@ namespace WinForms_FGUI
             string iconPattern = @"icon=""([^""]+)""";//icon="ui://m9pqa398gbxfe9l" 
             string fontPattern = @"font=""([^""]+)""";//font="ui://m9pqa398gbxfe9l" 
             string defaultPattern = @"defaultItem=""([^""]+)""";//defaultItem="ui://m9pqa398gbxfe9l" 
+            string namePattern = @"name=""([^""]+)""";//名字
             string[] strTxt;
+            var contentLog = "";
             foreach (string file in xmlFiles)
             {
-                //if (file.Contains("DialogFailView"))
-                //{
-                //    Console.WriteLine("测试某个页面依赖");
-                //}
+                if (file.Contains("LimitShopRewardView"))
+                {
+                    Console.WriteLine("测试某个页面依赖");
+                }
                 if (file.Contains("package.xml") == false)
                 {
                     strTxt = File.ReadAllLines(file);
@@ -134,6 +134,9 @@ namespace WinForms_FGUI
                             if (string.IsNullOrEmpty(packageName) == false && mCommonNameUIdDic.ContainsKey(packageName) == false && packageName != selfPack)
                             {
                                 AddDicTry(selfPack, xmlName, packageName);
+
+                                string eleName = Regex.Match(strTxt[i], namePattern).Groups[1].Value;//元素名字
+                                contentLog +=xmlName+"-->"+ eleName + "\r\n";
                             }
                         }
                         else if (string.IsNullOrEmpty(urlUIAll) == false)//懒 得 去提取了      
@@ -143,6 +146,8 @@ namespace WinForms_FGUI
                                 if (urlUIAll.Contains(item.Key) && item.Value != selfPack)
                                 {
                                     AddDicTry(selfPack, xmlName, item.Value);
+                                    string eleName = Regex.Match(strTxt[i], namePattern).Groups[1].Value;//元素名字
+                                    contentLog += xmlName + "-->" + eleName + "\r\n";
                                     break;
                                 }
                             }
@@ -154,6 +159,8 @@ namespace WinForms_FGUI
                                 if (iconUIAll.Contains(item.Key) && item.Value != selfPack)
                                 {
                                     AddDicTry(selfPack, xmlName, item.Value);
+                                    string eleName = Regex.Match(strTxt[i], namePattern).Groups[1].Value;//元素名字
+                                    contentLog += xmlName + "-->" + eleName + "\r\n";
                                     break;
                                 }
                             }
@@ -165,6 +172,8 @@ namespace WinForms_FGUI
                                 if (defaultUIAll.Contains(item.Key) && item.Value != selfPack)
                                 {
                                     AddDicTry(selfPack, xmlName, item.Value);
+                                    string eleName = Regex.Match(strTxt[i], namePattern).Groups[1].Value;//元素名字
+                                    contentLog += xmlName + "-->" + eleName + "\r\n";
                                     break;
                                 }
                             }
@@ -176,6 +185,8 @@ namespace WinForms_FGUI
                                 if (fontUIAll.Contains(item.Key) && item.Value != selfPack)
                                 {
                                     AddDicTry(selfPack, xmlName, item.Value);
+                                    string eleName = Regex.Match(strTxt[i], namePattern).Groups[1].Value;//元素名字
+                                    contentLog += xmlName + "-->" + eleName + "\r\n";
                                     break;
                                 }
                             }
@@ -196,8 +207,8 @@ namespace WinForms_FGUI
                 }
                 sb.AppendLine(item.Key + " 依赖了其他业务包 : " + str);
             }
-            this.txtConsole.Text = sb.ToString();
-
+            this.txtConsole.Text = sb.ToString()+"\r\n\r\n修正时,看这个方便点xml-->元素\r\n"+contentLog;
+ 
         }
 
         void AddDicTry(string selfPack, string xmlName, string Value)
@@ -236,10 +247,10 @@ namespace WinForms_FGUI
             {
                 directoryPath = this.fguiPath.Text + "/" + this.fguiPKGTxt.Text;// 目录路径
             }
-            var isPath = (directoryPath.Contains("Fgui") || directoryPath.Contains("fgui"));
+            var isPath = (directoryPath.Contains("Fgui") || directoryPath.Contains("fgui") || directoryPath.Contains("Project"));
             if (isPath == false)
             {
-                MessageBox.Show("你的目录咋不含Fgui | fgui 字眼___判定为非法目录");
+                MessageBox.Show("你的目录咋不含Fgui | fgui | Project 字眼___判定为非法目录");
                 return;
             }
             if (Directory.Exists(directoryPath) == false)
@@ -270,7 +281,7 @@ namespace WinForms_FGUI
                     packageId = string.Empty;
                     for (int i = 0; i < strTxt.Length; i++)
                     {
-                        if (strTxt[i].Contains("image"))
+                        if (strTxt[i].Contains("image id"))
                         {
                             string idValue = Regex.Match(strTxt[i], idPattern).Groups[1].Value;
                             string nameValue = Regex.Match(strTxt[i], namePattern).Groups[1].Value;

@@ -1,0 +1,2 @@
+G:\gitHub\FguiProject_Check\release\WinForms_FGUI.pdb
+G:\gitHub\FguiProject_Check\release\WinForms_FGUI.exe
