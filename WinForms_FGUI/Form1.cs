@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -28,7 +29,7 @@ namespace WinForms_FGUI
                 mCommonNameUIdDic.Add(strs[i], "");
             }
 
-            var contentTxt = this.fguiPath.Text + "_*_" + this.ignoreTxt.Text + "_*_" + this.fguiPKGTxt.Text+"_*_"+this.ignoreIconCommon.Text;
+            var contentTxt = this.fguiPath.Text + "_*_" + this.ignoreTxt.Text + "_*_" + this.fguiPKGTxt.Text + "_*_" + this.ignoreIconCommon.Text;
             File.WriteAllText(mFGUIPath, contentTxt);
 
             mPackageUIdNameDic.Clear();
@@ -129,14 +130,14 @@ namespace WinForms_FGUI
                         if (string.IsNullOrEmpty(packageUId) == false)
                         {
                             var packageName = "";
-                            mPackageUIdNameDic.TryGetValue(packageUId, out packageName);                            
+                            mPackageUIdNameDic.TryGetValue(packageUId, out packageName);
                             //var packageName = mPackageUIdNameDic.ContainsKey(packageUId)? mPackageUIdNameDic[packageUId]:"";//某包名字
                             if (string.IsNullOrEmpty(packageName) == false && mCommonNameUIdDic.ContainsKey(packageName) == false && packageName != selfPack)
                             {
                                 AddDicTry(selfPack, xmlName, packageName);
 
                                 string eleName = Regex.Match(strTxt[i], namePattern).Groups[1].Value;//元素名字
-                                contentLog +=xmlName+"-->"+ eleName + "\r\n";
+                                contentLog += xmlName + "-->" + eleName + "\r\n";
                             }
                         }
                         else if (string.IsNullOrEmpty(urlUIAll) == false)//懒 得 去提取了      
@@ -207,8 +208,8 @@ namespace WinForms_FGUI
                 }
                 sb.AppendLine(item.Key + " 依赖了其他业务包 : " + str);
             }
-            this.txtConsole.Text = sb.ToString()+"\r\n\r\n修正时,看这个方便点xml-->元素\r\n"+contentLog;
- 
+            this.txtConsole.Text = sb.ToString() + "\r\n\r\n修正时,看这个方便点xml-->元素\r\n" + contentLog;
+
         }
 
         void AddDicTry(string selfPack, string xmlName, string Value)
@@ -231,7 +232,7 @@ namespace WinForms_FGUI
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            if (this.ignoreIconCommon.Text.Length <= 2 || this.ignoreIconCommon.Text.Contains(";")==false)
+            if (this.ignoreIconCommon.Text.Length <= 2 || this.ignoreIconCommon.Text.Contains(";") == false)
             {
                 return;
             }
@@ -445,6 +446,90 @@ namespace WinForms_FGUI
         private void Form1_Load_1(object sender, EventArgs e)
         {
 
+        }
+
+        private void checkImgBtn_Click(object sender, EventArgs e)
+        {
+            //string inputDirectory = @"C:\TestImg";
+            string inputDirectory = this.fguiPath.Text;// -- @"C:\TestImg";       
+
+            string[] imageFiles = Directory.GetFiles(inputDirectory, "*.png", SearchOption.AllDirectories);     // 获取输入目录下所有图片文件    
+            Dictionary<string, List<string>> hashDictionary = new Dictionary<string, List<string>>();        // 字典用于存储哈希值及其对应的文件路径列表
+
+            foreach (var imageFile in imageFiles)
+            {
+                string hash = GetImageHash(imageFile);         // 计算图片文件的哈希值
+
+                // 将哈希值和文件路径添加到字典中
+                if (!hashDictionary.ContainsKey(hash))
+                {
+                    hashDictionary[hash] = new List<string>();
+                }
+                hashDictionary[hash].Add(imageFile);
+            }
+
+
+            List<IgnoreImg> ignoreList = new List<IgnoreImg>();
+
+            // 输出具有相同哈希值的图片文件
+            foreach (var hashEntry in hashDictionary)
+            {
+                if (hashEntry.Value.Count > 1)
+                {
+                    Image tmp = Image.FromFile(hashEntry.Value[0]);
+                    List<string> list = new List<string>();
+                    foreach (var imagePath in hashEntry.Value)
+                    {
+                        string path = imagePath.Replace(this.fguiPath.Text, "");
+                        list.Add(path);
+                    }
+                    ignoreList.Add(new IgnoreImg(tmp.Width * tmp.Height, list));
+
+                }
+            }
+
+            ignoreList.Sort((a, b) =>
+            {
+                return a.size < b.size ? 1 : -1;
+            });
+
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("已为倒序了 优先处理大的相同碎图\r\n");
+            var index = 0;
+            foreach (var iList in ignoreList)
+            {
+                index++;
+                sb.AppendLine($"第{index}张,面积是{iList.size},路径有-->{this.fguiPath.Text}");
+                foreach (var imgPath in iList.imgs)
+                {
+                    sb.AppendLine(imgPath);
+                }
+                sb.AppendLine("");
+            }
+
+            this.txtConsole.Text = sb.ToString();
+        }
+
+        class IgnoreImg
+        {
+            public int size;
+            public List<string> imgs;
+            public IgnoreImg(int size, List<string> tags)
+            {
+                this.size = size;
+                this.imgs = tags;
+            }
+        }
+        static string GetImageHash(string imagePath)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                using (var stream = File.OpenRead(imagePath))
+                {
+                    byte[] hashBytes = sha256.ComputeHash(stream);
+                    return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+                }
+            }
         }
     }
 

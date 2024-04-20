@@ -40,6 +40,7 @@
             ignoreTxt = new TextBox();
             label4 = new Label();
             ignoreIconCommon = new TextBox();
+            checkImgBtn = new Button();
             SuspendLayout();
             // 
             // fguiPath
@@ -149,11 +150,22 @@
             ignoreIconCommon.TabIndex = 11;
             ignoreIconCommon.Text = "Items;Common";
             // 
+            // checkImgBtn
+            // 
+            checkImgBtn.Location = new Point(697, 2);
+            checkImgBtn.Name = "checkImgBtn";
+            checkImgBtn.Size = new Size(91, 24);
+            checkImgBtn.TabIndex = 12;
+            checkImgBtn.Text = "检测重复碎图";
+            checkImgBtn.UseVisualStyleBackColor = true;
+            checkImgBtn.Click += checkImgBtn_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 861);
+            Controls.Add(checkImgBtn);
             Controls.Add(ignoreIconCommon);
             Controls.Add(label4);
             Controls.Add(ignoreTxt);
@@ -187,5 +199,6 @@
         private TextBox ignoreTxt;
         private Label label4;
         private TextBox ignoreIconCommon;
+        private Button checkImgBtn;
     }
 }
