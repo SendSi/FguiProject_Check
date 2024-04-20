@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WinForms_FGUI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+de5b03ae1dedb9c00346b2db44bd8effb8119439")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+88d6a12fc80e15273acb1f783682cf72070ba8f6")]
 [assembly: System.Reflection.AssemblyProductAttribute("WinForms_FGUI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WinForms_FGUI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

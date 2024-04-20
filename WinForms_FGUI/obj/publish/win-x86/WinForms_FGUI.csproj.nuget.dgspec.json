@@ -1,21 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "G:\\gitHub\\FguiProject_Check\\WinForms_FGUI\\WinForms_FGUI.csproj": {}
+    "D:\\git_Project\\FguiProject_Check\\WinForms_FGUI\\WinForms_FGUI.csproj": {}
   },
   "projects": {
-    "G:\\gitHub\\FguiProject_Check\\WinForms_FGUI\\WinForms_FGUI.csproj": {
+    "D:\\git_Project\\FguiProject_Check\\WinForms_FGUI\\WinForms_FGUI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "G:\\gitHub\\FguiProject_Check\\WinForms_FGUI\\WinForms_FGUI.csproj",
+        "projectUniqueName": "D:\\git_Project\\FguiProject_Check\\WinForms_FGUI\\WinForms_FGUI.csproj",
         "projectName": "WinForms_FGUI",
-        "projectPath": "G:\\gitHub\\FguiProject_Check\\WinForms_FGUI\\WinForms_FGUI.csproj",
+        "projectPath": "D:\\git_Project\\FguiProject_Check\\WinForms_FGUI\\WinForms_FGUI.csproj",
         "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-        "outputPath": "G:\\gitHub\\FguiProject_Check\\WinForms_FGUI\\obj\\publish\\win-x86\\",
+        "outputPath": "D:\\git_Project\\FguiProject_Check\\WinForms_FGUI\\obj\\publish\\win-x86\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
           "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config",
