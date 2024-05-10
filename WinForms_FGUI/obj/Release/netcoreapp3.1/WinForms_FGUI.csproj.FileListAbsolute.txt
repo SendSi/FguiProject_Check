@@ -1,7 +1,0 @@
-D:\Winform\WinForms_FGUI\WinForms_FGUI\obj\Release\netcoreapp3.1\WinForms_FGUI.csproj.AssemblyReference.cache
-D:\Winform\WinForms_FGUI\WinForms_FGUI\obj\Release\netcoreapp3.1\WinForms_FGUI.Form1.resources
-D:\Winform\WinForms_FGUI\WinForms_FGUI\obj\Release\netcoreapp3.1\WinForms_FGUI.csproj.GenerateResource.cache
-D:\Winform\WinForms_FGUI\WinForms_FGUI\obj\Release\netcoreapp3.1\WinForms_FGUI.GeneratedMSBuildEditorConfig.editorconfig
-D:\Winform\WinForms_FGUI\WinForms_FGUI\obj\Release\netcoreapp3.1\WinForms_FGUI.AssemblyInfoInputs.cache
-D:\Winform\WinForms_FGUI\WinForms_FGUI\obj\Release\netcoreapp3.1\WinForms_FGUI.AssemblyInfo.cs
-D:\Winform\WinForms_FGUI\WinForms_FGUI\obj\Release\netcoreapp3.1\WinForms_FGUI.csproj.CoreCompileInputs.cache

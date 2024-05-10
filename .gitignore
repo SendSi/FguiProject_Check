@@ -46,17 +46,6 @@ ExportedObj/
 *.mdb
 *.opendb
 *.VC.db
-.idea/
-Library/
-Logs/
-HybridCLRData/
-exe/
-yoo/
-Bundles/
-Toolkit/CSFiles/
-Excel/cs/
-Excel/json/
-Excel/___init___.bat
 .vs/
 WinForms_FGUI/bin/
 WinForms_FGUI/obj/

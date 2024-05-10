@@ -41,15 +41,18 @@
             label4 = new Label();
             ignoreIconCommon = new TextBox();
             checkImgBtn = new Button();
+            label5 = new Label();
+            textComView = new TextBox();
+            comSearchBtn = new Button();
             SuspendLayout();
             // 
             // fguiPath
             // 
             fguiPath.Location = new Point(66, 6);
             fguiPath.Name = "fguiPath";
-            fguiPath.Size = new Size(376, 23);
+            fguiPath.Size = new Size(476, 23);
             fguiPath.TabIndex = 0;
-            fguiPath.Text = "G:\\Bingganren2021_SVN\\client\\FguiProject\\assets";
+            fguiPath.Text = "G:\\Bingganren2021_SVN\\client\\FguiProject\\assets";      
             // 
             // btnSearch
             // 
@@ -63,10 +66,10 @@
             // 
             // txtConsole
             // 
-            txtConsole.Location = new Point(12, 114);
+            txtConsole.Location = new Point(12, 151);
             txtConsole.Multiline = true;
             txtConsole.Name = "txtConsole";
-            txtConsole.Size = new Size(776, 735);
+            txtConsole.Size = new Size(776, 758);
             txtConsole.TabIndex = 2;
             // 
             // btnPackage
@@ -152,19 +155,49 @@
             // 
             // checkImgBtn
             // 
-            checkImgBtn.Location = new Point(697, 2);
+            checkImgBtn.Location = new Point(670, 5);
             checkImgBtn.Name = "checkImgBtn";
-            checkImgBtn.Size = new Size(91, 24);
+            checkImgBtn.Size = new Size(118, 24);
             checkImgBtn.TabIndex = 12;
-            checkImgBtn.Text = "检测重复碎图";
+            checkImgBtn.Text = "检测图片";
             checkImgBtn.UseVisualStyleBackColor = true;
             checkImgBtn.Click += checkImgBtn_Click;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(12, 116);
+            label5.Name = "label5";
+            label5.Size = new Size(97, 17);
+            label5.TabIndex = 13;
+            label5.Text = "查_无引用的组件";
+            // 
+            // textComView
+            // 
+            textComView.Location = new Point(106, 113);
+            textComView.Name = "textComView";
+            textComView.Size = new Size(145, 23);
+            textComView.TabIndex = 14;
+            textComView.Text = "WorkShop";
+            // 
+            // comSearchBtn
+            // 
+            comSearchBtn.Location = new Point(257, 113);
+            comSearchBtn.Name = "comSearchBtn";
+            comSearchBtn.Size = new Size(54, 25);
+            comSearchBtn.TabIndex = 15;
+            comSearchBtn.Text = "引用";
+            comSearchBtn.UseVisualStyleBackColor = true;
+            comSearchBtn.Click += comSearchBtn_Click;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 861);
+            ClientSize = new Size(800, 921);
+            Controls.Add(comSearchBtn);
+            Controls.Add(textComView);
+            Controls.Add(label5);
             Controls.Add(checkImgBtn);
             Controls.Add(ignoreIconCommon);
             Controls.Add(label4);
@@ -200,5 +233,8 @@
         private Label label4;
         private TextBox ignoreIconCommon;
         private Button checkImgBtn;
+        private Label label5;
+        private TextBox textComView;
+        private Button comSearchBtn;
     }
 }

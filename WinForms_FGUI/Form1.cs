@@ -458,14 +458,17 @@ namespace WinForms_FGUI
 
             foreach (var imageFile in imageFiles)
             {
-                string hash = GetImageHash(imageFile);         // 计算图片文件的哈希值
-
-                // 将哈希值和文件路径添加到字典中
-                if (!hashDictionary.ContainsKey(hash))
+                if (imageFile.Contains("\\HF\\") == false)//将某一个文件不参与查重
                 {
-                    hashDictionary[hash] = new List<string>();
+                    string hash = GetImageHash(imageFile);         // 计算图片文件的哈希值
+
+                    // 将哈希值和文件路径添加到字典中
+                    if (!hashDictionary.ContainsKey(hash))
+                    {
+                        hashDictionary[hash] = new List<string>();
+                    }
+                    hashDictionary[hash].Add(imageFile);
                 }
-                hashDictionary[hash].Add(imageFile);
             }
 
 
@@ -480,26 +483,26 @@ namespace WinForms_FGUI
                     List<string> list = new List<string>();
                     foreach (var imagePath in hashEntry.Value)
                     {
-                        string path = imagePath.Replace(this.fguiPath.Text, "");
-                        list.Add(path);
+                        //string path = imagePath.Replace(this.fguiPath.Text, "");
+                        list.Add(imagePath);
                     }
                     ignoreList.Add(new IgnoreImg(tmp.Width * tmp.Height, list));
-
+                    tmp.Dispose();
                 }
             }
 
             ignoreList.Sort((a, b) =>
             {
-                return a.size < b.size ? 1 : -1;
+                return a.size <= b.size ? 1 : -1;
             });
 
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("已为倒序了 优先处理大的相同碎图\r\n");
+            sb.AppendLine("已为倒序了 优先处理相同的大碎图  HF包为热更包,不参与查重 \r\n");
             var index = 0;
             foreach (var iList in ignoreList)
             {
                 index++;
-                sb.AppendLine($"第{index}张,面积是{iList.size},路径有-->{this.fguiPath.Text}");
+                sb.AppendLine($"第{index}张,面积是{iList.size},路径有-->");
                 foreach (var imgPath in iList.imgs)
                 {
                     sb.AppendLine(imgPath);
@@ -531,6 +534,58 @@ namespace WinForms_FGUI
                 }
             }
         }
+        private void comSearchBtn_Click(object sender, EventArgs e)
+        {
+            var comView = this.textComView.Text;
+            var bigPath = this.fguiPath.Text + "\\" + comView;
+            var packagePath = bigPath + "\\package.xml";
+
+            var strTxt = File.ReadAllLines(packagePath);
+            Dictionary<string, string> idNameDic = new Dictionary<string, string>();
+            string idPattern = @"id=""([^""]+)""";
+            string namePattern = @"name=""([^""]+)""";
+            for (int i = 0; i < strTxt.Length; i++)
+            {
+                if (strTxt[i].Contains("component id"))
+                {
+                    string idValue = Regex.Match(strTxt[i], idPattern).Groups[1].Value;
+                    string nameValue = Regex.Match(strTxt[i], namePattern).Groups[1].Value;
+                    idNameDic[idValue] = nameValue;
+                }
+            }
+
+            var bigXML = Directory.GetFiles(bigPath, "*.xml", SearchOption.AllDirectories); // 获取以.xml为后缀的所有文件
+            foreach (var item in bigXML)
+            {
+                if (item.Contains("package.xml") == false)
+                {
+                    var strTxt2 = File.ReadAllLines(item);
+                    for (int st = 0; st < strTxt2.Length; st++)
+                    {
+                        for (int iN = 0; iN < idNameDic.Count; iN++)
+                        {
+                            (string key, string value) = idNameDic.ElementAt(iN);
+                            if (strTxt2[st].Contains(key))
+                            {
+                                idNameDic[key] = string.Empty;
+                            }
+                        }
+                    }
+                }
+            }
+
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("有一些组件或页面没有被直接引用,程序去查下代码有无引用,若无引用,最好删除(此处页面也会被输出的)\r\n因为:有些碎图被弃用的组件所引用着,只能删除了弃用的组件,查无引用的碎图才直观\r\n");
+            foreach (var item in idNameDic)
+            {
+                if (string.IsNullOrEmpty(item.Value) == false)
+                {
+                    sb.AppendLine(item.Value);
+                }
+            }
+            this.txtConsole.Text = sb.ToString();
+        }
+
     }
 
     public class MySortPng

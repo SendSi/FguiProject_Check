@@ -1,2 +1,0 @@
-G:\Bingganren2021_SVN\client\FguiProject_Check\release\WinForms_FGUI.pdb
-G:\Bingganren2021_SVN\client\FguiProject_Check\release\WinForms_FGUI.exe
