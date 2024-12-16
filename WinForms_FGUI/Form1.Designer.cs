@@ -52,11 +52,11 @@
             fguiPath.Name = "fguiPath";
             fguiPath.Size = new Size(476, 23);
             fguiPath.TabIndex = 0;
-            fguiPath.Text = "G:\\Bingganren2021_SVN\\client\\FguiProject\\assets";      
+            fguiPath.Text = "G:\\Bingganren2021_SVN\\client\\FguiProject\\assets";
             // 
             // btnSearch
             // 
-            btnSearch.Location = new Point(685, 75);
+            btnSearch.Location = new Point(289, 112);
             btnSearch.Name = "btnSearch";
             btnSearch.Size = new Size(104, 25);
             btnSearch.TabIndex = 1;
@@ -94,7 +94,7 @@
             // 
             // fguiPKGTxt
             // 
-            fguiPKGTxt.Location = new Point(584, 76);
+            fguiPKGTxt.Location = new Point(188, 113);
             fguiPKGTxt.Name = "fguiPKGTxt";
             fguiPKGTxt.Size = new Size(100, 23);
             fguiPKGTxt.TabIndex = 5;
@@ -104,7 +104,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(408, 79);
+            label1.Location = new Point(12, 116);
             label1.Name = "label1";
             label1.Size = new Size(175, 17);
             label1.TabIndex = 6;
@@ -166,7 +166,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(12, 116);
+            label5.Location = new Point(430, 82);
             label5.Name = "label5";
             label5.Size = new Size(97, 17);
             label5.TabIndex = 13;
@@ -174,7 +174,7 @@
             // 
             // textComView
             // 
-            textComView.Location = new Point(106, 113);
+            textComView.Location = new Point(524, 79);
             textComView.Name = "textComView";
             textComView.Size = new Size(145, 23);
             textComView.TabIndex = 14;
@@ -182,7 +182,7 @@
             // 
             // comSearchBtn
             // 
-            comSearchBtn.Location = new Point(257, 113);
+            comSearchBtn.Location = new Point(675, 79);
             comSearchBtn.Name = "comSearchBtn";
             comSearchBtn.Size = new Size(54, 25);
             comSearchBtn.TabIndex = 15;
