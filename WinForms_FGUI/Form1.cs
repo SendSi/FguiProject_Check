@@ -279,11 +279,12 @@ namespace WinForms_FGUI
 
             string[] xmlFiles = Directory.GetFiles(directoryPath, "*.xml", SearchOption.AllDirectories); // 获取以.xml为后缀的所有文件
             string packagePattern = @"id=""([^""]+)""";
+            string[] fntFiles = Directory.GetFiles(directoryPath, "*.fnt", SearchOption.AllDirectories); // 获取以.fnt为后缀的所有文件  艺术字体
 
             string[] strTxt;
 
             string packageId = string.Empty;
-            ;
+
             Dictionary<string, string> idNameDic = new Dictionary<string, string>();
             Dictionary<string, string> pathPngDic = new Dictionary<string, string>();
             Dictionary<string, string> urlIdDic = new Dictionary<string, string>();
@@ -314,6 +315,23 @@ namespace WinForms_FGUI
                         }
                     }
                 }
+            }
+
+            string fntPattern = @"img=(\w+) xoffset";   //获取以.fnt为后缀的所有文件  艺术字体
+            foreach (string file in fntFiles)
+            {
+                strTxt = File.ReadAllLines(file);
+                for (int i = 0; i < strTxt.Length; i++)
+                {
+                    if (strTxt[i].Contains("img="))//char id=43 img=uzxrck xoffset=0 yoffset=0 xadvance=0
+                    {
+                        string idValue = Regex.Match(strTxt[i], fntPattern).Groups[1].Value;
+                        if (idNameDic.ContainsKey(idValue) == true)
+                        {
+                            idNameDic.Remove(idValue);
+                        }
+                    }
+                }              
             }
 
             string srcPattern = @"src=""([^""]+)""";
