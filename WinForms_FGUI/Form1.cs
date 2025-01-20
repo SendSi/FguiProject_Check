@@ -6,17 +6,17 @@ namespace WinForms_FGUI
 {
     public partial class Form1 : Form
     {
+        string mSaveTxtPath;
         public Form1()
         {
             InitializeComponent();
+            mSaveTxtPath = Path.Combine(Application.StartupPath, "checkFGUI.txt");
         }
-
-        string mFGUIPath = @"C:/fguiPath.txt";
 
         void SaveFguiPath()
         {
             string contentTxt = this.fguiPath.Text + "_*_" + this.ignoreTxt.Text + "_*_" + this.fguiPKGTxt.Text + "_*_" + this.textComView.Text;
-            File.WriteAllText(mFGUIPath, contentTxt);
+            File.WriteAllText(mSaveTxtPath, contentTxt);
         }
 
         Dictionary<string, string> mPackageUIdNameDic = new Dictionary<string, string>(); //key=包id,,,value=包名字
@@ -30,21 +30,21 @@ namespace WinForms_FGUI
             globalTip.InitialDelay = 100;
             globalTip.ReshowDelay = 0;
             globalTip.ShowAlways = true;
-            globalTip.SetToolTip(this.btn_GlobalCom, "这个会全局搜索下,一般[非业务包]用这个____[业务包]用左边的就够了");
-            globalTip.SetToolTip(this.btn_GlobalImg, "这个会全局搜索下,一般[非业务包]用这个____[业务包]用左边的就够了");
+            globalTip.SetToolTip(this.btn_GlobalCom, "这个会全局搜索下,一般[非业务包]用这个____[业务包]用左边的就够了_全局搜索比较慢_卡");
+            globalTip.SetToolTip(this.btn_GlobalImg, "这个会全局搜索下,一般[非业务包]用这个____[业务包]用左边的就够了_全局搜索比较慢_卡");
             globalTip.SetToolTip(this.btnPackage, "可查看本项目的所有包,好copy去查询");
             globalTip.SetToolTip(this.checkImgBtn, "同一张相同的图片 可能在多个包中,得考虑一下[大图]是否要挪到公共包呢");
             globalTip.SetToolTip(this.btnRef, "理论上,[业务包]不会去依赖[业务包]的___[业务包]仅可依赖[本包]与[公共包]");
 
             string txtContent;
-            if (File.Exists(mFGUIPath))
+            if (File.Exists(mSaveTxtPath))
             {
-                txtContent = File.ReadAllText(mFGUIPath);
+                txtContent = File.ReadAllText(mSaveTxtPath);
             }
             else
             {
                 txtContent = @"D:\WorkProject\UnityClient\Unity\FGUIProject\assets_*_Common;ItemPKG_*_Common_*_Common";
-                File.WriteAllText(mFGUIPath, txtContent);
+                File.WriteAllText(mSaveTxtPath, txtContent);
                 MessageBox.Show("首次进来,请先设置FGUI路径  使用过后,下次就不用再设置了");
             }
 
@@ -112,12 +112,12 @@ namespace WinForms_FGUI
 
         private void btnRef_Click(object sender, EventArgs e)
         {
-            if (mCommonNameUIdDic == null)
-            {
+            //if (mCommonNameUIdDic == null)
+            //{
                 //MessageBox.Show("请先点击 拥有的包 按钮");
                 //return;
                 btnPackage_Click(null,null);
-            }
+            //}
 
             mXmlListDic.Clear();
             string directoryPath = this.fguiPath.Text; // 目录路径
@@ -590,11 +590,23 @@ namespace WinForms_FGUI
             DependentCom(this.fguiPath.Text);
         }
 
+        bool IsDirectory(string path)
+        {
+            if (Directory.Exists(path) == false)
+            {
+                MessageBox.Show("目录不存在");
+                return false;
+            }
+            return true;
+        }
+
         void DependentCom(string findPath)
         {
             var comView = this.textComView.Text;
             var bigPath = this.fguiPath.Text + "\\" + comView;
-            var packagePath = bigPath + "\\package.xml";
+            if (IsDirectory(bigPath) == false) return;
+            var packagePath = bigPath + "\\package.xml";     
+
             SaveFguiPath();
             var strTxt = File.ReadAllLines(packagePath);
 
