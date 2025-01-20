@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             fguiPath = new TextBox();
             btnSearch = new Button();
             txtConsole = new TextBox();
@@ -38,12 +39,13 @@
             label2 = new Label();
             label3 = new Label();
             ignoreTxt = new TextBox();
-            label4 = new Label();
-            ignoreIconCommon = new TextBox();
             checkImgBtn = new Button();
             label5 = new Label();
             textComView = new TextBox();
             comSearchBtn = new Button();
+            btn_GlobalCom = new Button();
+            btn_GlobalImg = new Button();
+            globalTip = new ToolTip(components);
             SuspendLayout();
             // 
             // fguiPath
@@ -56,27 +58,27 @@
             // 
             // btnSearch
             // 
-            btnSearch.Location = new Point(289, 112);
+            btnSearch.Location = new Point(265, 103);
             btnSearch.Name = "btnSearch";
-            btnSearch.Size = new Size(104, 25);
+            btnSearch.Size = new Size(129, 25);
             btnSearch.TabIndex = 1;
-            btnSearch.Text = "图片无引用的";
+            btnSearch.Text = "仅本包_图片无引用的";
             btnSearch.UseVisualStyleBackColor = true;
             btnSearch.Click += btnSearch_Click;
             // 
             // txtConsole
             // 
-            txtConsole.Location = new Point(12, 151);
+            txtConsole.Location = new Point(12, 144);
             txtConsole.Multiline = true;
             txtConsole.Name = "txtConsole";
-            txtConsole.Size = new Size(776, 758);
+            txtConsole.Size = new Size(776, 765);
             txtConsole.TabIndex = 2;
             // 
             // btnPackage
             // 
-            btnPackage.Location = new Point(639, 36);
+            btnPackage.Location = new Point(548, 5);
             btnPackage.Name = "btnPackage";
-            btnPackage.Size = new Size(75, 24);
+            btnPackage.Size = new Size(84, 24);
             btnPackage.TabIndex = 3;
             btnPackage.Text = "拥有的包";
             btnPackage.UseVisualStyleBackColor = true;
@@ -84,19 +86,19 @@
             // 
             // btnRef
             // 
-            btnRef.Location = new Point(719, 36);
+            btnRef.Location = new Point(638, 38);
             btnRef.Name = "btnRef";
-            btnRef.Size = new Size(75, 24);
+            btnRef.Size = new Size(137, 24);
             btnRef.TabIndex = 4;
-            btnRef.Text = "查询依赖";
+            btnRef.Text = "查_组件错误依赖的";
             btnRef.UseVisualStyleBackColor = true;
             btnRef.Click += btnRef_Click;
             // 
             // fguiPKGTxt
             // 
-            fguiPKGTxt.Location = new Point(188, 113);
+            fguiPKGTxt.Location = new Point(114, 105);
             fguiPKGTxt.Name = "fguiPKGTxt";
-            fguiPKGTxt.Size = new Size(100, 23);
+            fguiPKGTxt.Size = new Size(145, 23);
             fguiPKGTxt.TabIndex = 5;
             fguiPKGTxt.Text = "Common";
             fguiPKGTxt.TextChanged += fguiPKGTxt_TextChanged;
@@ -104,11 +106,11 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(12, 116);
+            label1.Location = new Point(12, 107);
             label1.Name = "label1";
-            label1.Size = new Size(175, 17);
+            label1.Size = new Size(97, 17);
             label1.TabIndex = 6;
-            label1.Text = "若不填(空白),则默认为整个工程";
+            label1.Text = "查_无引用的图片";
             // 
             // label2
             // 
@@ -124,49 +126,32 @@
             label3.AutoSize = true;
             label3.Location = new Point(12, 40);
             label3.Name = "label3";
-            label3.Size = new Size(157, 17);
+            label3.Size = new Size(175, 17);
             label3.TabIndex = 8;
-            label3.Text = "查业务包依赖业务包_公共包";
+            label3.Text = "公共包,icon包(也就是非业务包)";
             // 
             // ignoreTxt
             // 
-            ignoreTxt.Location = new Point(165, 38);
+            ignoreTxt.Location = new Point(188, 38);
             ignoreTxt.Name = "ignoreTxt";
-            ignoreTxt.Size = new Size(467, 23);
+            ignoreTxt.Size = new Size(444, 23);
             ignoreTxt.TabIndex = 9;
             ignoreTxt.Text = "Common;Items;Font";
             // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Location = new Point(12, 79);
-            label4.Name = "label4";
-            label4.Size = new Size(172, 17);
-            label4.TabIndex = 10;
-            label4.Text = "查无引用的图片_icon包;常驻包";
-            // 
-            // ignoreIconCommon
-            // 
-            ignoreIconCommon.Location = new Point(183, 76);
-            ignoreIconCommon.Name = "ignoreIconCommon";
-            ignoreIconCommon.Size = new Size(222, 23);
-            ignoreIconCommon.TabIndex = 11;
-            ignoreIconCommon.Text = "Items;Common";
-            // 
             // checkImgBtn
             // 
-            checkImgBtn.Location = new Point(670, 5);
+            checkImgBtn.Location = new Point(684, 5);
             checkImgBtn.Name = "checkImgBtn";
-            checkImgBtn.Size = new Size(118, 24);
+            checkImgBtn.Size = new Size(93, 24);
             checkImgBtn.TabIndex = 12;
-            checkImgBtn.Text = "检测图片";
+            checkImgBtn.Text = "检测重复图片";
             checkImgBtn.UseVisualStyleBackColor = true;
             checkImgBtn.Click += checkImgBtn_Click;
             // 
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(430, 82);
+            label5.Location = new Point(11, 73);
             label5.Name = "label5";
             label5.Size = new Size(97, 17);
             label5.TabIndex = 13;
@@ -174,7 +159,7 @@
             // 
             // textComView
             // 
-            textComView.Location = new Point(524, 79);
+            textComView.Location = new Point(114, 71);
             textComView.Name = "textComView";
             textComView.Size = new Size(145, 23);
             textComView.TabIndex = 14;
@@ -182,25 +167,45 @@
             // 
             // comSearchBtn
             // 
-            comSearchBtn.Location = new Point(675, 79);
+            comSearchBtn.Location = new Point(265, 71);
             comSearchBtn.Name = "comSearchBtn";
-            comSearchBtn.Size = new Size(54, 25);
+            comSearchBtn.Size = new Size(129, 25);
             comSearchBtn.TabIndex = 15;
-            comSearchBtn.Text = "引用";
+            comSearchBtn.Text = "仅本包_组件无引用的";
             comSearchBtn.UseVisualStyleBackColor = true;
             comSearchBtn.Click += comSearchBtn_Click;
+            // 
+            // btn_GlobalCom
+            // 
+            btn_GlobalCom.Location = new Point(397, 71);
+            btn_GlobalCom.Name = "btn_GlobalCom";
+            btn_GlobalCom.Size = new Size(118, 25);
+            btn_GlobalCom.TabIndex = 16;
+            btn_GlobalCom.Text = "全局与本包_无引用";
+            btn_GlobalCom.UseVisualStyleBackColor = true;
+            btn_GlobalCom.Click += btn_GlobalCom_Click;
+            // 
+            // btn_GlobalImg
+            // 
+            btn_GlobalImg.Location = new Point(397, 103);
+            btn_GlobalImg.Name = "btn_GlobalImg";
+            btn_GlobalImg.Size = new Size(118, 25);
+            btn_GlobalImg.TabIndex = 17;
+            btn_GlobalImg.Text = "全局与本包_无引用";
+            btn_GlobalImg.UseVisualStyleBackColor = true;
+            btn_GlobalImg.Click += btn_GlobalImg_Click;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 921);
+            Controls.Add(btn_GlobalImg);
+            Controls.Add(btn_GlobalCom);
             Controls.Add(comSearchBtn);
             Controls.Add(textComView);
             Controls.Add(label5);
             Controls.Add(checkImgBtn);
-            Controls.Add(ignoreIconCommon);
-            Controls.Add(label4);
             Controls.Add(ignoreTxt);
             Controls.Add(label3);
             Controls.Add(label2);
@@ -230,11 +235,12 @@
         private Label label2;
         private Label label3;
         private TextBox ignoreTxt;
-        private Label label4;
-        private TextBox ignoreIconCommon;
         private Button checkImgBtn;
         private Label label5;
         private TextBox textComView;
         private Button comSearchBtn;
+        private Button btn_GlobalCom;
+        private Button btn_GlobalImg;
+        private ToolTip globalTip;
     }
 }

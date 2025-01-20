@@ -12,11 +12,10 @@ namespace WinForms_FGUI
         }
 
         string mFGUIPath = @"C:/fguiPath.txt";
-        string mFGUILog = @"C:/fguiLog.txt";
 
         void SaveFguiPath()
         {
-            string contentTxt = this.fguiPath.Text + "_*_" + this.ignoreTxt.Text + "_*_" + this.fguiPKGTxt.Text + "_*_" + this.ignoreIconCommon.Text + "_*_" + this.textComView.Text;
+            string contentTxt = this.fguiPath.Text + "_*_" + this.ignoreTxt.Text + "_*_" + this.fguiPKGTxt.Text + "_*_" + this.textComView.Text;
             File.WriteAllText(mFGUIPath, contentTxt);
         }
 
@@ -25,22 +24,50 @@ namespace WinForms_FGUI
         Dictionary<string, string> mCommonNameUIdDic; // = new Dictionary<string, string>() { { "Common", "" }, { "Items", "" }, { "Font", "" }, };//公有包  key=包名字,,,value=包id
         Dictionary<string, string> mNoneCommonUIdNameDic; //= new Dictionary<string, string>() { { "Common", "" }, { "Items", "" }, { "Font", "" }, };//公有包  key=包名字,,,value=包id
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            globalTip.AutoPopDelay = 25000;
+            globalTip.InitialDelay = 100;
+            globalTip.ReshowDelay = 0;
+            globalTip.ShowAlways = true;
+            globalTip.SetToolTip(this.btn_GlobalCom, "这个会全局搜索下,一般[非业务包]用这个____[业务包]用左边的就够了");
+            globalTip.SetToolTip(this.btn_GlobalImg, "这个会全局搜索下,一般[非业务包]用这个____[业务包]用左边的就够了");
+            globalTip.SetToolTip(this.btnPackage, "可查看本项目的所有包,好copy去查询");
+            globalTip.SetToolTip(this.checkImgBtn, "同一张相同的图片 可能在多个包中,得考虑一下[大图]是否要挪到公共包呢");
+            globalTip.SetToolTip(this.btnRef, "理论上,[业务包]不会去依赖[业务包]的___[业务包]仅可依赖[本包]与[公共包]");
+
+            string txtContent;
+            if (File.Exists(mFGUIPath))
+            {
+                txtContent = File.ReadAllText(mFGUIPath);
+            }
+            else
+            {
+                txtContent = @"D:\WorkProject\UnityClient\Unity\FGUIProject\assets_*_Common;ItemPKG_*_Common_*_Common";
+                File.WriteAllText(mFGUIPath, txtContent);
+                MessageBox.Show("首次进来,请先设置FGUI路径  使用过后,下次就不用再设置了");
+            }
+
+            var strs = txtContent.Split("_*_");
+            this.fguiPath.Text = strs[0];
+            this.ignoreTxt.Text = strs[1];
+            this.fguiPKGTxt.Text = strs[2];
+            this.textComView.Text = strs[3];
+        }
+
         private void btnPackage_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(this.ignoreTxt.Text))
             {
                 return;
             }
-
             var strs = this.ignoreTxt.Text.Split(";");
             mCommonNameUIdDic = new Dictionary<string, string>();
             for (int i = 0; i < strs.Length; i++)
             {
                 mCommonNameUIdDic.Add(strs[i], "");
             }
-
             SaveFguiPath();
-
             mPackageUIdNameDic.Clear();
             mNoneCommonUIdNameDic = new Dictionary<string, string>();
             string directoryPath = this.fguiPath.Text; // 目录路径
@@ -49,18 +76,14 @@ namespace WinForms_FGUI
                 MessageBox.Show("目录不存在");
                 return;
             }
-
             string[] xmlFiles = Directory.GetFiles(directoryPath, "*.xml", SearchOption.AllDirectories); // 获取以.xml为后缀的所有文件
             string packagePattern = @"id=""([^""]+)""";
-
             string[] strTxt;
-
             foreach (string file in xmlFiles)
             {
                 if (file.Contains("package.xml"))
                 {
                     strTxt = File.ReadAllLines(file);
-
                     if (strTxt[1].Contains("packageDescription"))
                     {
                         string packageUId = Regex.Match(strTxt[1], packagePattern).Groups[1].Value;
@@ -78,7 +101,6 @@ namespace WinForms_FGUI
                     }
                 }
             }
-
             StringBuilder sb = new StringBuilder();
             foreach (var item in mPackageUIdNameDic)
             {
@@ -92,8 +114,9 @@ namespace WinForms_FGUI
         {
             if (mCommonNameUIdDic == null)
             {
-                MessageBox.Show("请先点击 拥有的包 按钮");
-                return;
+                //MessageBox.Show("请先点击 拥有的包 按钮");
+                //return;
+                btnPackage_Click(null,null);
             }
 
             mXmlListDic.Clear();
@@ -109,10 +132,10 @@ namespace WinForms_FGUI
             var contentLog = "";
             foreach (string file in xmlFiles)
             {
-                if (file.Contains("LimitShopRewardView"))
-                {
-                    Console.WriteLine("测试某个页面依赖");
-                }
+                //if (file.Contains("LimitShopRewardView"))
+                //{
+                //    Console.WriteLine("测试某个页面依赖");
+                //}
 
                 if (file.Contains("package.xml") == false)
                 {
@@ -243,15 +266,93 @@ namespace WinForms_FGUI
             }
         }
 
+
+
+        private void fguiPKGTxt_TextChanged(object sender, EventArgs e)
+        {
+        }
+
+      
+
+        private void Form1_Load_1(object sender, EventArgs e)
+        {
+        }
+
+        private void checkImgBtn_Click(object sender, EventArgs e)
+        {
+            string inputDirectory = this.fguiPath.Text; // -- @"C:\TestImg";       
+
+            string[] imageFiles = Directory.GetFiles(inputDirectory, "*.png", SearchOption.AllDirectories); // 获取输入目录下所有图片文件    
+            Dictionary<string, List<string>> hashDictionary = new Dictionary<string, List<string>>(); // 字典用于存储哈希值及其对应的文件路径列表
+
+            foreach (var imageFile in imageFiles)
+            {
+                if (imageFile.Contains("\\HF\\") == false) //将某一个文件不参与查重
+                {
+                    string hash = GetImageHash(imageFile); // 计算图片文件的哈希值
+
+                    // 将哈希值和文件路径添加到字典中
+                    if (!hashDictionary.ContainsKey(hash))
+                    {
+                        hashDictionary[hash] = new List<string>();
+                    }
+
+                    hashDictionary[hash].Add(imageFile);
+                }
+            }
+
+            List<IgnoreImg> ignoreList = new List<IgnoreImg>();
+
+            // 输出具有相同哈希值的图片文件
+            foreach (var hashEntry in hashDictionary)
+            {
+                if (hashEntry.Value.Count > 1)
+                {
+                    Image tmp = Image.FromFile(hashEntry.Value[0]);
+                    List<string> list = new List<string>();
+                    foreach (var imagePath in hashEntry.Value)
+                    {
+                        //string path = imagePath.Replace(this.fguiPath.Text, "");
+                        list.Add(imagePath);
+                    }
+
+                    ignoreList.Add(new IgnoreImg(tmp.Width * tmp.Height, list));
+                    tmp.Dispose();
+                }
+            }
+
+            ignoreList.Sort((a, b) => { return a.size <= b.size ? 1 : -1; });
+
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("已为倒序了 优先处理相同的大碎图  HF包为热更包,不参与查重 \r\n");
+            var index = 0;
+            foreach (var iList in ignoreList)
+            {
+                index++;
+                sb.AppendLine($"第{index}张,面积是{iList.size},路径有-->");
+                foreach (var imgPath in iList.imgs)
+                {
+                    sb.AppendLine(imgPath);
+                }
+
+                sb.AppendLine("");
+            }
+
+            this.txtConsole.Text = sb.ToString();
+        }
+
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            if (this.ignoreIconCommon.Text.Length <= 2 || this.ignoreIconCommon.Text.Contains(";") == false)
+            var serachPath = $"{this.fguiPath.Text}/{this.fguiPKGTxt.Text}";
+            SearchImg(serachPath);
+        }
+        void SearchImg(string pSearchPath)
+        {
+            if (this.ignoreTxt.Text.Length <= 2)
             {
                 return;
             }
-
-            var ignoreList = this.ignoreIconCommon.Text.Split(";");
-
+            var ignoreList = this.ignoreTxt.Text.Split(";");
             string directoryPath;
             if (this.fguiPKGTxt.Text.Length <= 2)
             {
@@ -277,7 +378,7 @@ namespace WinForms_FGUI
 
             SaveFguiPath(); ;
 
-            string[] xmlFiles = Directory.GetFiles(directoryPath, "*.xml", SearchOption.AllDirectories); // 获取以.xml为后缀的所有文件
+            string[] targetXmlFiles = Directory.GetFiles(directoryPath, "*.xml", SearchOption.AllDirectories); // 获取以.xml为后缀的所有文件
             string packagePattern = @"id=""([^""]+)""";
             string[] fntFiles = Directory.GetFiles(directoryPath, "*.fnt", SearchOption.AllDirectories); // 获取以.fnt为后缀的所有文件  艺术字体
 
@@ -291,9 +392,9 @@ namespace WinForms_FGUI
             string idPattern = @"id=""([^""]+)""";
             string namePattern = @"name=""([^""]+)""";
             string pathPattern = @"path=""([^""]+)""";
-            foreach (string file in xmlFiles)
+            foreach (string file in targetXmlFiles)
             {
-                if (file.Contains(ignoreList[0]) == false && file.Contains("package.xml"))
+                if (file.Contains("package.xml"))
                 {
                     strTxt = File.ReadAllLines(file);
                     packageId = string.Empty;
@@ -331,7 +432,7 @@ namespace WinForms_FGUI
                             idNameDic.Remove(idValue);
                         }
                     }
-                }              
+                }
             }
 
             string srcPattern = @"src=""([^""]+)""";
@@ -342,12 +443,9 @@ namespace WinForms_FGUI
             string defaultPattern = @"default=""([^""]+)""";
             string iconItemPattern = @"icon=""([^""]+)"""; //      <item icon="ui://qllwua2i9mq2w57"/>
             string currTxt_I = "";
-            if (this.fguiPKGTxt.Text == ignoreList[1])
-            {
-                xmlFiles = Directory.GetFiles(this.fguiPath.Text, "*.xml", SearchOption.AllDirectories); // 获取以.xml为后缀的所有文件
-            }
 
-            foreach (string file in xmlFiles)
+            string[] matchXmlFiles = Directory.GetFiles(pSearchPath, "*.xml", SearchOption.AllDirectories); // 获取以.xml为后缀的所有文件
+            foreach (string file in matchXmlFiles)
             {
                 if (file.Contains("package.xml") == false)
                 {
@@ -454,104 +552,15 @@ namespace WinForms_FGUI
             Console.WriteLine("共计 " + idNameDic.Count);
         }
 
-        private void fguiPKGTxt_TextChanged(object sender, EventArgs e)
+        private void btn_GlobalImg_Click(object sender, EventArgs e)
         {
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            string txtContent;
-            if (File.Exists(mFGUIPath))
-            {
-                txtContent = File.ReadAllText(mFGUIPath);
-            }
-            else
-            {
-                txtContent = @"G:\Bingganren2021_SVN\client\FguiProject\assets_*_Common;Items;Font_*_Common_*_Items;Common_*_Builds";
-                File.WriteAllText(mFGUIPath, txtContent);
-            }
-
-            var strs = txtContent.Split("_*_");
-            this.fguiPath.Text = strs[0];
-            this.ignoreTxt.Text = strs[1];
-            this.fguiPKGTxt.Text = strs[2];
-            this.ignoreIconCommon.Text = strs[3];
-            this.textComView.Text = strs[4];
-        }
-
-        private void Form1_Load_1(object sender, EventArgs e)
-        {
-        }
-
-        private void checkImgBtn_Click(object sender, EventArgs e)
-        {
-            //string inputDirectory = @"C:\TestImg";
-            string inputDirectory = this.fguiPath.Text; // -- @"C:\TestImg";       
-
-            string[] imageFiles = Directory.GetFiles(inputDirectory, "*.png", SearchOption.AllDirectories); // 获取输入目录下所有图片文件    
-            Dictionary<string, List<string>> hashDictionary = new Dictionary<string, List<string>>(); // 字典用于存储哈希值及其对应的文件路径列表
-
-            foreach (var imageFile in imageFiles)
-            {
-                if (imageFile.Contains("\\HF\\") == false) //将某一个文件不参与查重
-                {
-                    string hash = GetImageHash(imageFile); // 计算图片文件的哈希值
-
-                    // 将哈希值和文件路径添加到字典中
-                    if (!hashDictionary.ContainsKey(hash))
-                    {
-                        hashDictionary[hash] = new List<string>();
-                    }
-
-                    hashDictionary[hash].Add(imageFile);
-                }
-            }
-
-            List<IgnoreImg> ignoreList = new List<IgnoreImg>();
-
-            // 输出具有相同哈希值的图片文件
-            foreach (var hashEntry in hashDictionary)
-            {
-                if (hashEntry.Value.Count > 1)
-                {
-                    Image tmp = Image.FromFile(hashEntry.Value[0]);
-                    List<string> list = new List<string>();
-                    foreach (var imagePath in hashEntry.Value)
-                    {
-                        //string path = imagePath.Replace(this.fguiPath.Text, "");
-                        list.Add(imagePath);
-                    }
-
-                    ignoreList.Add(new IgnoreImg(tmp.Width * tmp.Height, list));
-                    tmp.Dispose();
-                }
-            }
-
-            ignoreList.Sort((a, b) => { return a.size <= b.size ? 1 : -1; });
-
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("已为倒序了 优先处理相同的大碎图  HF包为热更包,不参与查重 \r\n");
-            var index = 0;
-            foreach (var iList in ignoreList)
-            {
-                index++;
-                sb.AppendLine($"第{index}张,面积是{iList.size},路径有-->");
-                foreach (var imgPath in iList.imgs)
-                {
-                    sb.AppendLine(imgPath);
-                }
-
-                sb.AppendLine("");
-            }
-
-            this.txtConsole.Text = sb.ToString();
+            SearchImg(this.fguiPath.Text);
         }
 
         class IgnoreImg
         {
             public int size;
             public List<string> imgs;
-
             public IgnoreImg(int size, List<string> tags)
             {
                 this.size = size;
@@ -573,13 +582,22 @@ namespace WinForms_FGUI
 
         private void comSearchBtn_Click(object sender, EventArgs e)
         {
+            DependentCom($"{this.fguiPath.Text}\\{this.textComView.Text}");
+        }
+
+        private void btn_GlobalCom_Click(object sender, EventArgs e)
+        {
+            DependentCom(this.fguiPath.Text);
+        }
+
+        void DependentCom(string findPath)
+        {
             var comView = this.textComView.Text;
             var bigPath = this.fguiPath.Text + "\\" + comView;
             var packagePath = bigPath + "\\package.xml";
-
             SaveFguiPath();
-
             var strTxt = File.ReadAllLines(packagePath);
+
             Dictionary<string, string> idNameDic = new Dictionary<string, string>();
             string idPattern = @"id=""([^""]+)""";
             string namePattern = @"name=""([^""]+)""";
@@ -593,7 +611,7 @@ namespace WinForms_FGUI
                 }
             }
 
-            var bigXML = Directory.GetFiles(bigPath, "*.xml", SearchOption.AllDirectories); // 获取以.xml为后缀的所有文件
+            var bigXML = Directory.GetFiles(findPath, "*.xml", SearchOption.AllDirectories); // 获取以.xml为后缀的所有文件
             foreach (var item in bigXML)
             {
                 if (item.Contains("package.xml") == false)
@@ -614,7 +632,7 @@ namespace WinForms_FGUI
             }
 
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("有一些组件或页面没有被直接引用,程序去查下代码有无引用,若无引用,最好删除(此处页面也会被输出的)\r\n因为:有些碎图被弃用的组件所引用着,只能删除了弃用的组件,查无引用的碎图才直观\r\n");
+            sb.AppendLine("有一些组件或页面没有被直接引用,程序去查下代码有无引用,若无引用,最好删除(此处[页面View]也会被输出的)\r\n因为:有些碎图被弃用的组件所引用着,只能删除了弃用的组件,查无引用的碎图才直观\r\n");
             foreach (var item in idNameDic)
             {
                 if (string.IsNullOrEmpty(item.Value) == false)
@@ -625,6 +643,9 @@ namespace WinForms_FGUI
 
             this.txtConsole.Text = sb.ToString();
         }
+
+
+
     }
 
     public class MySortPng
