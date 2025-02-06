@@ -29,42 +29,44 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            fguiPath = new TextBox();
-            btnSearch = new Button();
+            fguiProjectPath = new TextBox();
+            btn_SelfImg = new Button();
             txtConsole = new TextBox();
             btnPackage = new Button();
             btnRef = new Button();
-            fguiPKGTxt = new TextBox();
-            label1 = new Label();
+            txtNoneImg = new TextBox();
+            lblNoneImg = new Label();
             label2 = new Label();
-            label3 = new Label();
-            ignoreTxt = new TextBox();
+            lblCommon = new Label();
+            txt_Ignore = new TextBox();
             checkImgBtn = new Button();
-            label5 = new Label();
-            textComView = new TextBox();
-            comSearchBtn = new Button();
+            lblNoneCom = new Label();
+            txtNoneCom = new TextBox();
+            btn_SelfCom = new Button();
             btn_GlobalCom = new Button();
             btn_GlobalImg = new Button();
             globalTip = new ToolTip(components);
+            btn_ProjectCom = new Button();
+            btn_ProjectImg = new Button();
             SuspendLayout();
             // 
-            // fguiPath
+            // fguiProjectPath
             // 
-            fguiPath.Location = new Point(66, 6);
-            fguiPath.Name = "fguiPath";
-            fguiPath.Size = new Size(476, 23);
-            fguiPath.TabIndex = 0;
-            fguiPath.Text = "G:\\Bingganren2021_SVN\\client\\FguiProject\\assets";
+            fguiProjectPath.Location = new Point(67, 6);
+            fguiProjectPath.Name = "fguiProjectPath";
+            fguiProjectPath.Size = new Size(476, 23);
+            fguiProjectPath.TabIndex = 0;
+            fguiProjectPath.Text = "G:\\Bingganren2021_SVN\\client\\FguiProject\\assets";
             // 
-            // btnSearch
+            // btn_SelfImg
             // 
-            btnSearch.Location = new Point(265, 103);
-            btnSearch.Name = "btnSearch";
-            btnSearch.Size = new Size(129, 25);
-            btnSearch.TabIndex = 1;
-            btnSearch.Text = "仅本包_图片无引用的";
-            btnSearch.UseVisualStyleBackColor = true;
-            btnSearch.Click += btnSearch_Click;
+            btn_SelfImg.Location = new Point(265, 103);
+            btn_SelfImg.Name = "btn_SelfImg";
+            btn_SelfImg.Size = new Size(129, 25);
+            btn_SelfImg.TabIndex = 1;
+            btn_SelfImg.Text = "仅本包_图片无引用的";
+            btn_SelfImg.UseVisualStyleBackColor = true;
+            btn_SelfImg.Click += btn_SelfImg_Click;
             // 
             // txtConsole
             // 
@@ -94,23 +96,23 @@
             btnRef.UseVisualStyleBackColor = true;
             btnRef.Click += btnRef_Click;
             // 
-            // fguiPKGTxt
+            // txtNoneImg
             // 
-            fguiPKGTxt.Location = new Point(114, 105);
-            fguiPKGTxt.Name = "fguiPKGTxt";
-            fguiPKGTxt.Size = new Size(145, 23);
-            fguiPKGTxt.TabIndex = 5;
-            fguiPKGTxt.Text = "Common";
-            fguiPKGTxt.TextChanged += fguiPKGTxt_TextChanged;
+            txtNoneImg.Location = new Point(114, 105);
+            txtNoneImg.Name = "txtNoneImg";
+            txtNoneImg.Size = new Size(145, 23);
+            txtNoneImg.TabIndex = 5;
+            txtNoneImg.Text = "Common";
+            txtNoneImg.TextChanged += txtNoneImg_TextChanged;
             // 
-            // label1
+            // lblNoneImg
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(12, 107);
-            label1.Name = "label1";
-            label1.Size = new Size(97, 17);
-            label1.TabIndex = 6;
-            label1.Text = "查_无引用的图片";
+            lblNoneImg.AutoSize = true;
+            lblNoneImg.Location = new Point(12, 107);
+            lblNoneImg.Name = "lblNoneImg";
+            lblNoneImg.Size = new Size(97, 17);
+            lblNoneImg.TabIndex = 6;
+            lblNoneImg.Text = "查_无引用的图片";
             // 
             // label2
             // 
@@ -121,22 +123,22 @@
             label2.TabIndex = 7;
             label2.Text = "工程目录";
             // 
-            // label3
+            // lblCommon
             // 
-            label3.AutoSize = true;
-            label3.Location = new Point(12, 40);
-            label3.Name = "label3";
-            label3.Size = new Size(175, 17);
-            label3.TabIndex = 8;
-            label3.Text = "公共包,icon包(也就是非业务包)";
+            lblCommon.AutoSize = true;
+            lblCommon.Location = new Point(12, 40);
+            lblCommon.Name = "lblCommon";
+            lblCommon.Size = new Size(194, 17);
+            lblCommon.TabIndex = 8;
+            lblCommon.Text = "共用的业务包;策划配表ItemIcon包";
             // 
-            // ignoreTxt
+            // txt_Ignore
             // 
-            ignoreTxt.Location = new Point(188, 38);
-            ignoreTxt.Name = "ignoreTxt";
-            ignoreTxt.Size = new Size(444, 23);
-            ignoreTxt.TabIndex = 9;
-            ignoreTxt.Text = "Common;Items;Font";
+            txt_Ignore.Location = new Point(203, 38);
+            txt_Ignore.Name = "txt_Ignore";
+            txt_Ignore.Size = new Size(429, 23);
+            txt_Ignore.TabIndex = 9;
+            txt_Ignore.Text = "Common;Font;ItemPKG";
             // 
             // checkImgBtn
             // 
@@ -148,32 +150,33 @@
             checkImgBtn.UseVisualStyleBackColor = true;
             checkImgBtn.Click += checkImgBtn_Click;
             // 
-            // label5
+            // lblNoneCom
             // 
-            label5.AutoSize = true;
-            label5.Location = new Point(11, 73);
-            label5.Name = "label5";
-            label5.Size = new Size(97, 17);
-            label5.TabIndex = 13;
-            label5.Text = "查_无引用的组件";
+            lblNoneCom.AutoSize = true;
+            lblNoneCom.Location = new Point(11, 73);
+            lblNoneCom.Name = "lblNoneCom";
+            lblNoneCom.Size = new Size(97, 17);
+            lblNoneCom.TabIndex = 13;
+            lblNoneCom.Text = "查_无引用的组件";
             // 
-            // textComView
+            // txtNoneCom
             // 
-            textComView.Location = new Point(114, 71);
-            textComView.Name = "textComView";
-            textComView.Size = new Size(145, 23);
-            textComView.TabIndex = 14;
-            textComView.Text = "WorkShop";
+            txtNoneCom.Location = new Point(114, 71);
+            txtNoneCom.Name = "txtNoneCom";
+            txtNoneCom.Size = new Size(145, 23);
+            txtNoneCom.TabIndex = 14;
+            txtNoneCom.Text = "WorkShop";
+            txtNoneCom.TextChanged += txtNoneCom_TextChanged;
             // 
-            // comSearchBtn
+            // btn_SelfCom
             // 
-            comSearchBtn.Location = new Point(265, 71);
-            comSearchBtn.Name = "comSearchBtn";
-            comSearchBtn.Size = new Size(129, 25);
-            comSearchBtn.TabIndex = 15;
-            comSearchBtn.Text = "仅本包_组件无引用的";
-            comSearchBtn.UseVisualStyleBackColor = true;
-            comSearchBtn.Click += comSearchBtn_Click;
+            btn_SelfCom.Location = new Point(265, 71);
+            btn_SelfCom.Name = "btn_SelfCom";
+            btn_SelfCom.Size = new Size(129, 25);
+            btn_SelfCom.TabIndex = 15;
+            btn_SelfCom.Text = "仅本包_组件无引用的";
+            btn_SelfCom.UseVisualStyleBackColor = true;
+            btn_SelfCom.Click += btn_SelfCom_Click;
             // 
             // btn_GlobalCom
             // 
@@ -195,27 +198,49 @@
             btn_GlobalImg.UseVisualStyleBackColor = true;
             btn_GlobalImg.Click += btn_GlobalImg_Click;
             // 
+            // btn_ProjectCom
+            // 
+            btn_ProjectCom.Location = new Point(267, 71);
+            btn_ProjectCom.Name = "btn_ProjectCom";
+            btn_ProjectCom.Size = new Size(72, 25);
+            btn_ProjectCom.TabIndex = 18;
+            btn_ProjectCom.Text = "全搜索";
+            btn_ProjectCom.UseVisualStyleBackColor = true;
+            btn_ProjectCom.Click += btn_ProjectCom_Click;
+            // 
+            // btn_ProjectImg
+            // 
+            btn_ProjectImg.Location = new Point(267, 102);
+            btn_ProjectImg.Name = "btn_ProjectImg";
+            btn_ProjectImg.Size = new Size(72, 25);
+            btn_ProjectImg.TabIndex = 19;
+            btn_ProjectImg.Text = "全搜索";
+            btn_ProjectImg.UseVisualStyleBackColor = true;
+            btn_ProjectImg.Click += btn_ProjectImg_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 921);
+            Controls.Add(btn_ProjectImg);
+            Controls.Add(btn_ProjectCom);
             Controls.Add(btn_GlobalImg);
             Controls.Add(btn_GlobalCom);
-            Controls.Add(comSearchBtn);
-            Controls.Add(textComView);
-            Controls.Add(label5);
+            Controls.Add(btn_SelfCom);
+            Controls.Add(txtNoneCom);
+            Controls.Add(lblNoneCom);
             Controls.Add(checkImgBtn);
-            Controls.Add(ignoreTxt);
-            Controls.Add(label3);
+            Controls.Add(txt_Ignore);
+            Controls.Add(lblCommon);
             Controls.Add(label2);
-            Controls.Add(label1);
-            Controls.Add(fguiPKGTxt);
+            Controls.Add(lblNoneImg);
+            Controls.Add(txtNoneImg);
             Controls.Add(btnRef);
             Controls.Add(btnPackage);
             Controls.Add(txtConsole);
-            Controls.Add(btnSearch);
-            Controls.Add(fguiPath);
+            Controls.Add(btn_SelfImg);
+            Controls.Add(fguiProjectPath);
             Name = "Form1";
             Text = "Form1";
             Load += Form1_Load;
@@ -225,22 +250,24 @@
 
         #endregion
 
-        private TextBox fguiPath;
-        private Button btnSearch;
+        private TextBox fguiProjectPath;
+        private Button btn_SelfImg;
         private TextBox txtConsole;
         private Button btnPackage;
         private Button btnRef;
-        private TextBox fguiPKGTxt;
-        private Label label1;
+        private TextBox txtNoneImg;
+        private Label lblNoneImg;
         private Label label2;
-        private Label label3;
-        private TextBox ignoreTxt;
+        private Label lblCommon;
+        private TextBox txt_Ignore;
         private Button checkImgBtn;
-        private Label label5;
-        private TextBox textComView;
-        private Button comSearchBtn;
+        private Label lblNoneCom;
+        private TextBox txtNoneCom;
+        private Button btn_SelfCom;
         private Button btn_GlobalCom;
         private Button btn_GlobalImg;
         private ToolTip globalTip;
+        private Button btn_ProjectCom;
+        private Button btn_ProjectImg;
     }
 }

@@ -15,7 +15,7 @@ namespace WinForms_FGUI
 
         void SaveFguiPath()
         {
-            string contentTxt = this.fguiPath.Text + "_*_" + this.ignoreTxt.Text + "_*_" + this.fguiPKGTxt.Text + "_*_" + this.textComView.Text;
+            string contentTxt = this.fguiProjectPath.Text + "_*_" + this.txt_Ignore.Text + "_*_" + this.txtNoneImg.Text + "_*_" + this.txtNoneCom.Text;
             File.WriteAllText(mSaveTxtPath, contentTxt);
         }
 
@@ -35,6 +35,9 @@ namespace WinForms_FGUI
             globalTip.SetToolTip(this.btnPackage, "可查看本项目的所有包,好copy去查询");
             globalTip.SetToolTip(this.checkImgBtn, "同一张相同的图片 可能在多个包中,得考虑一下[大图]是否要挪到公共包呢");
             globalTip.SetToolTip(this.btnRef, "理论上,[业务包]不会去依赖[业务包]的___[业务包]仅可依赖[本包]与[公共包]");
+            globalTip.SetToolTip(this.lblCommon, "有格式要求的,用分号分隔开..最后一个是策划配的包.不参与检测的");
+            globalTip.SetToolTip(this.lblNoneCom, "若空白不填,则全去检测.搜索比较慢");
+            globalTip.SetToolTip(this.lblNoneImg, "若空白不填,则全去检测.搜索比较慢");
 
             string txtContent;
             if (File.Exists(mSaveTxtPath))
@@ -49,19 +52,22 @@ namespace WinForms_FGUI
             }
 
             var strs = txtContent.Split("_*_");
-            this.fguiPath.Text = strs[0];
-            this.ignoreTxt.Text = strs[1];
-            this.fguiPKGTxt.Text = strs[2];
-            this.textComView.Text = strs[3];
+            this.fguiProjectPath.Text = strs[0];
+            this.txt_Ignore.Text = strs[1];
+            this.txtNoneImg.Text = strs[2];
+            this.txtNoneCom.Text = strs[3];
+
+            txtNoneCom_TextChanged(null, null);
+            txtNoneImg_TextChanged(null, null);
         }
 
         private void btnPackage_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(this.ignoreTxt.Text))
+            if (string.IsNullOrEmpty(this.txt_Ignore.Text))
             {
                 return;
             }
-            var strs = this.ignoreTxt.Text.Split(";");
+            var strs = this.txt_Ignore.Text.Split(";");
             mCommonNameUIdDic = new Dictionary<string, string>();
             for (int i = 0; i < strs.Length; i++)
             {
@@ -70,7 +76,7 @@ namespace WinForms_FGUI
             SaveFguiPath();
             mPackageUIdNameDic.Clear();
             mNoneCommonUIdNameDic = new Dictionary<string, string>();
-            string directoryPath = this.fguiPath.Text; // 目录路径
+            string directoryPath = this.fguiProjectPath.Text; // 目录路径
             if (Directory.Exists(directoryPath) == false)
             {
                 MessageBox.Show("目录不存在");
@@ -112,15 +118,10 @@ namespace WinForms_FGUI
 
         private void btnRef_Click(object sender, EventArgs e)
         {
-            //if (mCommonNameUIdDic == null)
-            //{
-                //MessageBox.Show("请先点击 拥有的包 按钮");
-                //return;
-                btnPackage_Click(null,null);
-            //}
+            btnPackage_Click(null, null);
 
             mXmlListDic.Clear();
-            string directoryPath = this.fguiPath.Text; // 目录路径
+            string directoryPath = this.fguiProjectPath.Text; // 目录路径
             string[] xmlFiles = Directory.GetFiles(directoryPath, "*.xml", SearchOption.AllDirectories); // 获取以.xml为后缀的所有文件
             string pkgPattern = @"pkg=""([^""]+)""";
             string urlPattern = @"url=""([^""]+)"""; //url="ui://m9pqa398gbxfe9l" 
@@ -268,19 +269,9 @@ namespace WinForms_FGUI
 
 
 
-        private void fguiPKGTxt_TextChanged(object sender, EventArgs e)
-        {
-        }
-
-      
-
-        private void Form1_Load_1(object sender, EventArgs e)
-        {
-        }
-
         private void checkImgBtn_Click(object sender, EventArgs e)
         {
-            string inputDirectory = this.fguiPath.Text; // -- @"C:\TestImg";       
+            string inputDirectory = this.fguiProjectPath.Text; // -- @"C:\TestImg";       
 
             string[] imageFiles = Directory.GetFiles(inputDirectory, "*.png", SearchOption.AllDirectories); // 获取输入目录下所有图片文件    
             Dictionary<string, List<string>> hashDictionary = new Dictionary<string, List<string>>(); // 字典用于存储哈希值及其对应的文件路径列表
@@ -329,7 +320,7 @@ namespace WinForms_FGUI
             foreach (var iList in ignoreList)
             {
                 index++;
-                sb.AppendLine($"第{index}张,面积是{iList.size},路径有-->");
+                sb.AppendLine($"第{index}张,面积是 {iList.size} ,路径有-->");
                 foreach (var imgPath in iList.imgs)
                 {
                     sb.AppendLine(imgPath);
@@ -341,26 +332,26 @@ namespace WinForms_FGUI
             this.txtConsole.Text = sb.ToString();
         }
 
-        private void btnSearch_Click(object sender, EventArgs e)
+        private void btn_SelfImg_Click(object sender, EventArgs e)
         {
-            var serachPath = $"{this.fguiPath.Text}/{this.fguiPKGTxt.Text}";
+            var serachPath = $"{this.fguiProjectPath.Text}/{this.txtNoneImg.Text}";
             SearchImg(serachPath);
         }
         void SearchImg(string pSearchPath)
         {
-            if (this.ignoreTxt.Text.Length <= 2)
+            if (this.txt_Ignore.Text.Length <= 2)
             {
                 return;
             }
-            var ignoreList = this.ignoreTxt.Text.Split(";");
+            var ignoreList = this.txt_Ignore.Text.Split(";");
             string directoryPath;
-            if (this.fguiPKGTxt.Text.Length <= 2)
+            if (this.txtNoneImg.Text.Length <= 2)
             {
-                directoryPath = this.fguiPath.Text; //全路径
+                directoryPath = this.fguiProjectPath.Text; //全路径
             }
             else
             {
-                directoryPath = this.fguiPath.Text + "/" + this.fguiPKGTxt.Text; // 目录路径
+                directoryPath = this.fguiProjectPath.Text + "/" + this.txtNoneImg.Text; // 目录路径
             }
 
             var isPath = (directoryPath.Contains("Fgui") || directoryPath.Contains("fgui") || directoryPath.Contains("Project"));
@@ -376,8 +367,16 @@ namespace WinForms_FGUI
                 return;
             }
 
-            SaveFguiPath(); ;
+            SaveFguiPath();
 
+            StringBuilder sbItem = new StringBuilder();
+            sbItem.AppendLine("已为倒序了 优先处理大的碎图");
+            sbItem.AppendLine(GetNoneUsingImg(directoryPath, pSearchPath));
+            this.txtConsole.Text = sbItem.ToString();
+        }
+
+        string GetNoneUsingImg(string directoryPath, string pSearchPath)
+        {
             string[] targetXmlFiles = Directory.GetFiles(directoryPath, "*.xml", SearchOption.AllDirectories); // 获取以.xml为后缀的所有文件
             string packagePattern = @"id=""([^""]+)""";
             string[] fntFiles = Directory.GetFiles(directoryPath, "*.fnt", SearchOption.AllDirectories); // 获取以.fnt为后缀的所有文件  艺术字体
@@ -385,7 +384,6 @@ namespace WinForms_FGUI
             string[] strTxt;
 
             string packageId = string.Empty;
-
             Dictionary<string, string> idNameDic = new Dictionary<string, string>();
             Dictionary<string, string> pathPngDic = new Dictionary<string, string>();
             Dictionary<string, string> urlIdDic = new Dictionary<string, string>();
@@ -443,7 +441,6 @@ namespace WinForms_FGUI
             string defaultPattern = @"default=""([^""]+)""";
             string iconItemPattern = @"icon=""([^""]+)"""; //      <item icon="ui://qllwua2i9mq2w57"/>
             string currTxt_I = "";
-
             string[] matchXmlFiles = Directory.GetFiles(pSearchPath, "*.xml", SearchOption.AllDirectories); // 获取以.xml为后缀的所有文件
             foreach (string file in matchXmlFiles)
             {
@@ -541,20 +538,41 @@ namespace WinForms_FGUI
 
             var newlistSort = listSort.OrderByDescending(o => o.rectArea);
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("已为倒序了 优先处理大的碎图\r\n");
             foreach (var item in newlistSort)
             {
                 sb.AppendLine(item.outLineTxt);
             }
-
-            this.txtConsole.Text = sb.ToString();
-
-            Console.WriteLine("共计 " + idNameDic.Count);
+            return sb.ToString();
         }
 
         private void btn_GlobalImg_Click(object sender, EventArgs e)
         {
-            SearchImg(this.fguiPath.Text);
+            SearchImg(this.fguiProjectPath.Text);
+        }
+
+        private void btn_ProjectImg_Click(object sender, EventArgs e)
+        {
+            var subDirectories = Directory.GetDirectories(this.fguiProjectPath.Text);
+
+            var ignoreList = txt_Ignore.Text.Split(";");
+            var lastPKG = ignoreList[ignoreList.Length - 1];
+
+            StringBuilder sbAll = new StringBuilder();
+            sbAll.AppendLine($"已为倒序了 优先处理大的碎图      另:策划配表的ItemIcon包不参与检查:{lastPKG}");
+            foreach (string dir in subDirectories)
+            {
+                if (dir.Contains(lastPKG) == false)
+                {
+                    sbAll.AppendLine($"\r\n{dir.Replace(this.fguiProjectPath.Text, "")} 包下");
+                    var packagePath = $"{dir}\\package.xml";
+                    if (File.Exists(packagePath))
+                    {
+                        var sbOne = GetNoneUsingImg(dir, this.fguiProjectPath.Text);
+                        sbAll.Append(sbOne);
+                    }                
+                }
+            }
+            this.txtConsole.Text = sbAll.ToString();
         }
 
         class IgnoreImg
@@ -580,14 +598,14 @@ namespace WinForms_FGUI
             }
         }
 
-        private void comSearchBtn_Click(object sender, EventArgs e)
+        private void btn_SelfCom_Click(object sender, EventArgs e)
         {
-            DependentCom($"{this.fguiPath.Text}\\{this.textComView.Text}");
+            DependentCom($"{this.fguiProjectPath.Text}\\{this.txtNoneCom.Text}");
         }
 
         private void btn_GlobalCom_Click(object sender, EventArgs e)
         {
-            DependentCom(this.fguiPath.Text);
+            DependentCom(this.fguiProjectPath.Text);
         }
 
         bool IsDirectory(string path)
@@ -602,11 +620,42 @@ namespace WinForms_FGUI
 
         void DependentCom(string findPath)
         {
-            var comView = this.textComView.Text;
-            var bigPath = this.fguiPath.Text + "\\" + comView;
+            var comView = this.txtNoneCom.Text;
+            var bigPath = this.fguiProjectPath.Text + "\\" + comView;
             if (IsDirectory(bigPath) == false) return;
-            var packagePath = bigPath + "\\package.xml";     
+            var packagePath = bigPath + "\\package.xml";
 
+            if (File.Exists(packagePath) == false && string.IsNullOrEmpty(this.txtNoneCom.Text) == false)
+            {
+                MessageBox.Show("目录不存在,请检查 是否输入正确");//填了,没填对
+                return;
+            }
+            var sbOne = GetPackageDependTxt(packagePath, findPath);
+            sbOne.Insert(0, "有一些组件或页面没有被直接引用,程序去查下代码有无引用,若无引用,最好删除(此处[页面View]也会被输出的)\r\n因为:有些碎图被弃用的组件所引用着,只能删除了弃用的组件,查无引用的碎图才直观\r\n");
+            this.txtConsole.Text = sbOne.ToString();
+        }
+
+        private void btn_ProjectCom_Click(object sender, EventArgs e)
+        {
+            var subDirectories = Directory.GetDirectories(this.fguiProjectPath.Text);
+
+            StringBuilder sbAll = new StringBuilder();
+            sbAll.AppendLine("有一些组件或页面没有被直接引用,程序去查下代码有无引用,若无引用,最好删除(此处[页面View]也会被输出的)\r\n因为:有些碎图被弃用的组件所引用着,只能删除了弃用的组件,查无引用的碎图才直观");
+            foreach (string dir in subDirectories)
+            {
+                sbAll.AppendLine($"\r\n{dir.Replace(this.fguiProjectPath.Text, "")} 包下");
+                var packagePath = $"{dir}\\package.xml";
+                if (File.Exists(packagePath))
+                {
+                    var sbOne = GetPackageDependTxt(packagePath, this.fguiProjectPath.Text);
+                    sbAll.Append(sbOne);
+                }
+            }
+            this.txtConsole.Text = sbAll.ToString();
+        }
+
+        StringBuilder GetPackageDependTxt(string packagePath, string findPath)
+        {
             SaveFguiPath();
             var strTxt = File.ReadAllLines(packagePath);
 
@@ -644,7 +693,6 @@ namespace WinForms_FGUI
             }
 
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("有一些组件或页面没有被直接引用,程序去查下代码有无引用,若无引用,最好删除(此处[页面View]也会被输出的)\r\n因为:有些碎图被弃用的组件所引用着,只能删除了弃用的组件,查无引用的碎图才直观\r\n");
             foreach (var item in idNameDic)
             {
                 if (string.IsNullOrEmpty(item.Value) == false)
@@ -652,11 +700,22 @@ namespace WinForms_FGUI
                     sb.AppendLine(item.Value);
                 }
             }
-
-            this.txtConsole.Text = sb.ToString();
+            return sb;
         }
 
+        private void txtNoneCom_TextChanged(object sender, EventArgs e)
+        {
+            this.btn_ProjectCom.Visible = (this.txtNoneCom.Text.Length <= 0);
+            this.btn_GlobalCom.Visible = (this.txtNoneCom.Text.Length > 0);
+            this.btn_SelfCom.Visible = (this.txtNoneCom.Text.Length > 0);
+        }
 
+        private void txtNoneImg_TextChanged(object sender, EventArgs e)
+        {
+            this.btn_ProjectImg.Visible = (this.txtNoneImg.Text.Length <= 0);
+            this.btn_GlobalImg.Visible = (this.txtNoneImg.Text.Length > 0);
+            this.btn_SelfImg.Visible = (this.txtNoneImg.Text.Length > 0);
+        }
 
     }
 
