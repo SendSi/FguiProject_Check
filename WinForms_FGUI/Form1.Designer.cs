@@ -49,6 +49,7 @@
             btn_ProjectCom = new Button();
             btn_ProjectImg = new Button();
             txtScriptJson = new TextBox();
+            cbExtend = new CheckBox();
             SuspendLayout();
             // 
             // fguiProjectPath
@@ -221,18 +222,30 @@
             // 
             // txtScriptJson
             // 
-            txtScriptJson.Location = new Point(532, 87);
+            txtScriptJson.Font = new Font("Microsoft YaHei UI", 8F, FontStyle.Regular, GraphicsUnit.Point);
+            txtScriptJson.Location = new Point(521, 98);
             txtScriptJson.Multiline = true;
             txtScriptJson.Name = "txtScriptJson";
-            txtScriptJson.Size = new Size(256, 41);
+            txtScriptJson.Size = new Size(267, 41);
             txtScriptJson.TabIndex = 20;
             txtScriptJson.Text = "D:\\WorkProject\\UnityClient\\Unity\\Assets";
+            // 
+            // cbExtend
+            // 
+            cbExtend.AutoSize = true;
+            cbExtend.Location = new Point(521, 71);
+            cbExtend.Name = "cbExtend";
+            cbExtend.Size = new Size(123, 21);
+            cbExtend.TabIndex = 21;
+            cbExtend.Text = "只检测设为导出的";
+            cbExtend.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 921);
+            Controls.Add(cbExtend);
             Controls.Add(txtScriptJson);
             Controls.Add(btn_ProjectImg);
             Controls.Add(btn_ProjectCom);
@@ -281,5 +294,6 @@
         private Button btn_ProjectCom;
         private Button btn_ProjectImg;
         private TextBox txtScriptJson;
+        private CheckBox cbExtend;
     }
 }

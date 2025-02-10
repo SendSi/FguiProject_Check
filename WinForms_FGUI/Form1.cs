@@ -16,7 +16,7 @@ namespace WinForms_FGUI
 
         void SaveFguiPath()
         {
-            string contentTxt = this.fguiProjectPath.Text + "_*_" + this.txt_Ignore.Text + "_*_" + this.txtNoneImg.Text + "_*_" + this.txtNoneCom.Text + "_*_"+this.txtScriptJson.Text;
+            string contentTxt = this.fguiProjectPath.Text + "_*_" + this.txt_Ignore.Text + "_*_" + this.txtNoneImg.Text + "_*_" + this.txtNoneCom.Text + "_*_" + this.txtScriptJson.Text;
             File.WriteAllText(mSaveTxtPath, contentTxt);
         }
 
@@ -40,6 +40,7 @@ namespace WinForms_FGUI
             globalTip.SetToolTip(this.lblNoneCom, "若空白不填,则全去检测.大搜索要耗时哦");
             globalTip.SetToolTip(this.lblNoneImg, "若空白不填,则全去检测.大搜索要耗时哦");
             globalTip.SetToolTip(this.txtScriptJson, "可为空;;;;若不为空,查无引用图时,则也检测文本目录是否有对应的字符串(*.json|*.cs|*.lua),搜索要耗时哦");
+            globalTip.SetToolTip(this.cbExtend, "若勾上了,则仅检测[导出]的[组件\\图片];;;;若不勾上,则检测所有的[组件\\图片]\r\nTips:此复选框[用途],暂舍不得删无用的[组\\图],留着备用");
 
             string txtContent;
             if (File.Exists(mSaveTxtPath))
@@ -65,7 +66,7 @@ namespace WinForms_FGUI
             this.txt_Ignore.Text = strs[1];
             this.txtNoneImg.Text = strs[2];
             this.txtNoneCom.Text = strs[3];
-            this.txtScriptJson.Text =  strs[4];//增加框框时
+            this.txtScriptJson.Text = strs[4];//增加框框时
 
             txtNoneCom_TextChanged(null, null);
             txtNoneImg_TextChanged(null, null);
@@ -346,7 +347,7 @@ namespace WinForms_FGUI
         {
             if (CheckTextPathIsExist() == false) return;
             var serachPath = $"{this.fguiProjectPath.Text}/{this.txtNoneImg.Text}";
-            SearchImg(serachPath);    
+            SearchImg(serachPath);
         }
         void SearchImg(string pSearchPath)
         {
@@ -430,6 +431,7 @@ namespace WinForms_FGUI
             string idPattern = @"id=""([^""]+)""";
             string namePattern = @"name=""([^""]+)""";
             string pathPattern = @"path=""([^""]+)""";
+            bool checkExport = cbExtend.Checked;//是否检查导出
             foreach (string file in targetXmlFiles)
             {
                 if (file.Contains("package.xml"))
@@ -438,7 +440,8 @@ namespace WinForms_FGUI
                     packageId = string.Empty;
                     for (int i = 0; i < strTxt.Length; i++)
                     {
-                        if (strTxt[i].Contains("image id"))
+                        if ((checkExport == false && strTxt[i].Contains("image id")) ||//忽略 是否导出(全检)
+                           (checkExport == true && strTxt[i].Contains("image id") && strTxt[i].Contains("exported=")))  //仅检测  导出的
                         {
                             string idValue = Regex.Match(strTxt[i], idPattern).Groups[1].Value;
                             string nameValue = Regex.Match(strTxt[i], namePattern).Groups[1].Value;
@@ -750,17 +753,19 @@ namespace WinForms_FGUI
             SaveFguiPath();
             var strTxt = File.ReadAllLines(packagePath);
 
+            bool checkExport = cbExtend.Checked;//是否检查导出
             Dictionary<string, string> idNameDic = new Dictionary<string, string>();
             string idPattern = @"id=""([^""]+)""";
             string namePattern = @"name=""([^""]+)""";
             for (int i = 0; i < strTxt.Length; i++)
             {
-                if (strTxt[i].Contains("component id"))
+                if ((checkExport == false && strTxt[i].Contains("component id")) ||//忽略 是否导出(全检)
+                    (checkExport == true && strTxt[i].Contains("component id") && strTxt[i].Contains("exported=")))  //仅检测  导出的
                 {
                     string idValue = Regex.Match(strTxt[i], idPattern).Groups[1].Value;
                     string nameValue = Regex.Match(strTxt[i], namePattern).Groups[1].Value;
                     idNameDic[idValue] = nameValue;
-                }
+                }       
             }
 
             var bigXML = Directory.GetFiles(findPath, "*.xml", SearchOption.AllDirectories); // 获取以.xml为后缀的所有文件
