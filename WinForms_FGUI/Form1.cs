@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -15,7 +16,7 @@ namespace WinForms_FGUI
 
         void SaveFguiPath()
         {
-            string contentTxt = this.fguiProjectPath.Text + "_*_" + this.txt_Ignore.Text + "_*_" + this.txtNoneImg.Text + "_*_" + this.txtNoneCom.Text;
+            string contentTxt = this.fguiProjectPath.Text + "_*_" + this.txt_Ignore.Text + "_*_" + this.txtNoneImg.Text + "_*_" + this.txtNoneCom.Text + "_*_"+this.txtScriptJson.Text;
             File.WriteAllText(mSaveTxtPath, contentTxt);
         }
 
@@ -36,8 +37,9 @@ namespace WinForms_FGUI
             globalTip.SetToolTip(this.checkImgBtn, "同一张相同的图片 可能在多个包中,得考虑一下[大图]是否要挪到公共包呢");
             globalTip.SetToolTip(this.btnRef, "理论上,[业务包]不会去依赖[业务包]的___[业务包]仅可依赖[本包]与[公共包]");
             globalTip.SetToolTip(this.lblCommon, "有格式要求的,用分号分隔开..最后一个是策划配的包.不参与检测的");
-            globalTip.SetToolTip(this.lblNoneCom, "若空白不填,则全去检测.搜索比较慢");
-            globalTip.SetToolTip(this.lblNoneImg, "若空白不填,则全去检测.搜索比较慢");
+            globalTip.SetToolTip(this.lblNoneCom, "若空白不填,则全去检测.大搜索要耗时哦");
+            globalTip.SetToolTip(this.lblNoneImg, "若空白不填,则全去检测.大搜索要耗时哦");
+            globalTip.SetToolTip(this.txtScriptJson, "可为空;;;;若不为空,查无引用图时,则也检测文本目录是否有对应的字符串(*.json|*.cs|*.lua),搜索要耗时哦");
 
             string txtContent;
             if (File.Exists(mSaveTxtPath))
@@ -46,16 +48,24 @@ namespace WinForms_FGUI
             }
             else
             {
-                txtContent = @"D:\WorkProject\UnityClient\Unity\FGUIProject\assets_*_Common;ItemPKG_*_Common_*_Common";
+                txtContent = @"D:\WorkProject\UnityClient\Unity\FGUIProject\assets_*_Common;ItemPKG_*_Common_*_Common_*_D:\WorkProject\UnityClient\Unity\Assets";
                 File.WriteAllText(mSaveTxtPath, txtContent);
                 MessageBox.Show("首次进来,请先设置FGUI路径  使用过后,下次就不用再设置了");
             }
 
             var strs = txtContent.Split("_*_");
+            if (strs.Length <= 5)//增加功能  _*_增加了框框,值不够  就重新设置一下默认值
+            {
+                txtContent = @"D:\WorkProject\UnityClient\Unity\FGUIProject\assets_*_Common;ItemPKG_*_Common_*_Common_*_D:\WorkProject\UnityClient\Unity\Assets";
+                File.WriteAllText(mSaveTxtPath, txtContent);
+                strs = txtContent.Split("_*_");
+            }
+
             this.fguiProjectPath.Text = strs[0];
             this.txt_Ignore.Text = strs[1];
             this.txtNoneImg.Text = strs[2];
             this.txtNoneCom.Text = strs[3];
+            this.txtScriptJson.Text =  strs[4];//增加框框时
 
             txtNoneCom_TextChanged(null, null);
             txtNoneImg_TextChanged(null, null);
@@ -334,8 +344,9 @@ namespace WinForms_FGUI
 
         private void btn_SelfImg_Click(object sender, EventArgs e)
         {
+            if (CheckTextPathIsExist() == false) return;
             var serachPath = $"{this.fguiProjectPath.Text}/{this.txtNoneImg.Text}";
-            SearchImg(serachPath);
+            SearchImg(serachPath);    
         }
         void SearchImg(string pSearchPath)
         {
@@ -367,12 +378,41 @@ namespace WinForms_FGUI
                 return;
             }
 
+            if (string.IsNullOrEmpty(this.txtScriptJson.Text) == false)
+            {
+                DialogResult result = MessageBox.Show("右边的搜索文本框,有路径哦,请确认是否要搜索(*.json|*.lua|*.cs),估计搜索起来要20多秒", "确认操作", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                // 根据用户的选择执行相应的操作
+                if (result == DialogResult.No)
+                {
+                    return;
+                }
+            }
+
             SaveFguiPath();
 
             StringBuilder sbItem = new StringBuilder();
             sbItem.AppendLine("已为倒序了 优先处理大的碎图");
             sbItem.AppendLine(GetNoneUsingImg(directoryPath, pSearchPath));
             this.txtConsole.Text = sbItem.ToString();
+        }
+
+        /// <summary>         搜索文件夹中所有文件的指定文本     若无,则返回-1    </summary> 
+        public int SearchTextInFiles(string searchText, string[] files)
+        {
+            var directoryPath = this.txtScriptJson.Text;
+            foreach (var file in files)
+            {
+                int lineNumber = 1;
+                foreach (var line in File.ReadLines(file))
+                {
+                    if (line.Contains(searchText))
+                    {
+                        return lineNumber;
+                    }
+                    lineNumber++;
+                }
+            }
+            return -1;
         }
 
         string GetNoneUsingImg(string directoryPath, string pSearchPath)
@@ -521,18 +561,46 @@ namespace WinForms_FGUI
                 }
             }
 
+            bool isNeedCheckTxt = (string.IsNullOrEmpty(txtScriptJson.Text) == false);
+
             List<MySortPng> listSort = new List<MySortPng>();
-            foreach (var item in idNameDic)
+            if (isNeedCheckTxt == false)
             {
-                if (File.Exists(pathPngDic[item.Key]))
+                foreach (var item in idNameDic)
                 {
-                    Image image = Image.FromFile(pathPngDic[item.Key]);
-                    listSort.Add(new MySortPng
+                    if (File.Exists(pathPngDic[item.Key]))
                     {
-                        rectArea = (image.Width * image.Height),
-                        outLineTxt = string.Format("{0}    长{1},高{2},面积{3}", item.Value, image.Width, image.Height, (image.Width * image.Height))
-                    });
-                    image.Dispose();
+                        Image image = Image.FromFile(pathPngDic[item.Key]);
+                        listSort.Add(new MySortPng
+                        {
+                            rectArea = (image.Width * image.Height),
+                            outLineTxt = string.Format("{0}    长{1},高{2},面积{3}", item.Value, image.Width, image.Height, (image.Width * image.Height))
+                        });
+                        image.Dispose();
+                    }
+                }
+            }
+            else
+            {//需去检测文本(脚本或json)
+             // 获取所有 .cs 和 .json 和 .lua 文件
+                var files = Directory.GetFiles(this.txtScriptJson.Text, "*.*", SearchOption.AllDirectories).Where(file => file.EndsWith(".cs", StringComparison.OrdinalIgnoreCase) || file.EndsWith(".json", StringComparison.OrdinalIgnoreCase) || file.EndsWith(".lua", StringComparison.OrdinalIgnoreCase)).ToArray();
+                foreach (var item in idNameDic)
+                {
+                    if (File.Exists(pathPngDic[item.Key]))
+                    {
+                        string pngJPG_name = Path.GetFileNameWithoutExtension(item.Value);
+                        var hasNum = SearchTextInFiles(pngJPG_name, files);
+                        if (hasNum <= 0)
+                        {
+                            Image image = Image.FromFile(pathPngDic[item.Key]);
+                            listSort.Add(new MySortPng
+                            {
+                                rectArea = (image.Width * image.Height),
+                                outLineTxt = string.Format("{0}    长{1},高{2},面积{3}", item.Value, image.Width, image.Height, (image.Width * image.Height))
+                            });
+                            image.Dispose();
+                        }
+                    }
                 }
             }
 
@@ -547,11 +615,34 @@ namespace WinForms_FGUI
 
         private void btn_GlobalImg_Click(object sender, EventArgs e)
         {
+            if (CheckTextPathIsExist() == false) return;
             SearchImg(this.fguiProjectPath.Text);
+        }
+
+        bool CheckTextPathIsExist()
+        {
+            if (string.IsNullOrEmpty(this.txtScriptJson.Text) == false && Directory.Exists(this.txtScriptJson.Text) == false)
+            {
+                MessageBox.Show("右边的搜索目录 [非真实目录]   可悬停在输入框,看其作用");
+                return false;
+            }
+            return true;
         }
 
         private void btn_ProjectImg_Click(object sender, EventArgs e)
         {
+            if (CheckTextPathIsExist() == false) return;
+
+            if (string.IsNullOrEmpty(this.txtScriptJson.Text) == false)
+            {
+                DialogResult result = MessageBox.Show("右边的搜索文本框,有路径哦,请确认是否要搜索(*.json|*.lua|*.cs),估计搜索起来要40多秒", "确认操作", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                // 根据用户的选择执行相应的操作
+                if (result == DialogResult.No)
+                {
+                    return;
+                }
+            }
+
             var subDirectories = Directory.GetDirectories(this.fguiProjectPath.Text);
 
             var ignoreList = txt_Ignore.Text.Split(";");
@@ -569,7 +660,7 @@ namespace WinForms_FGUI
                     {
                         var sbOne = GetNoneUsingImg(dir, this.fguiProjectPath.Text);
                         sbAll.Append(sbOne);
-                    }                
+                    }
                 }
             }
             this.txtConsole.Text = sbAll.ToString();

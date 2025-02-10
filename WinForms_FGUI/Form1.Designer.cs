@@ -48,6 +48,7 @@
             globalTip = new ToolTip(components);
             btn_ProjectCom = new Button();
             btn_ProjectImg = new Button();
+            txtScriptJson = new TextBox();
             SuspendLayout();
             // 
             // fguiProjectPath
@@ -218,11 +219,21 @@
             btn_ProjectImg.UseVisualStyleBackColor = true;
             btn_ProjectImg.Click += btn_ProjectImg_Click;
             // 
+            // txtScriptJson
+            // 
+            txtScriptJson.Location = new Point(532, 87);
+            txtScriptJson.Multiline = true;
+            txtScriptJson.Name = "txtScriptJson";
+            txtScriptJson.Size = new Size(256, 41);
+            txtScriptJson.TabIndex = 20;
+            txtScriptJson.Text = "D:\\WorkProject\\UnityClient\\Unity\\Assets";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 921);
+            Controls.Add(txtScriptJson);
             Controls.Add(btn_ProjectImg);
             Controls.Add(btn_ProjectCom);
             Controls.Add(btn_GlobalImg);
@@ -269,5 +280,6 @@
         private ToolTip globalTip;
         private Button btn_ProjectCom;
         private Button btn_ProjectImg;
+        private TextBox txtScriptJson;
     }
 }
