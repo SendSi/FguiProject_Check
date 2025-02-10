@@ -54,7 +54,7 @@ namespace WinForms_FGUI
             }
 
             var strs = txtContent.Split("_*_");
-            if (strs.Length <= 5)//增加功能  _*_增加了框框,值不够  就重新设置一下默认值
+            if (strs.Length < 5)//增加功能  _*_增加了框框,值不够  就重新设置一下默认值
             {
                 txtContent = @"D:\WorkProject\UnityClient\Unity\FGUIProject\assets_*_Common;ItemPKG_*_Common_*_Common_*_D:\WorkProject\UnityClient\Unity\Assets";
                 File.WriteAllText(mSaveTxtPath, txtContent);
