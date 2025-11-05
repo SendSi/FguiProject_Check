@@ -245,7 +245,7 @@ namespace WinForms_FGUI
             }
 
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("1.可能丢失的引用 也计算在内了(若FGUI中查询我的依赖的资源 并没找到时,应该是丢失了,理论上丢失的也要把其清空的)  2.只能找到直接引用,间接引用无法查询");
+            sb.AppendLine($"1.可能丢失的引用 也计算在内了(若FGUI中查询我的依赖的资源 并没找到时,应该是丢失了,理论上丢失的也要把其清空的)  2.只能找到直接引用,间接引用无法查询 time={DateTime.Now.ToString("HH:mm:ss")}");
             sb.AppendLine();
             foreach (var item in mXmlListDic)
             {
@@ -326,7 +326,7 @@ namespace WinForms_FGUI
             ignoreList.Sort((a, b) => { return a.size <= b.size ? 1 : -1; });
 
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("已为倒序了 优先处理相同的大碎图  HF包为热更包,不参与查重 \r\n");
+            sb.AppendLine($"已为倒序了 优先处理相同的大碎图  HF包为热更包,不参与查重 time={DateTime.Now.ToString("HH:mm:ss")}\r\n");
             var index = 0;
             foreach (var iList in ignoreList)
             {
@@ -381,7 +381,7 @@ namespace WinForms_FGUI
 
             if (string.IsNullOrEmpty(this.txtScriptJson.Text) == false)
             {
-                DialogResult result = MessageBox.Show("右边的搜索文本框,有路径哦,请确认是否要搜索(*.json|*.lua|*.cs),估计搜索起来要20多秒", "确认操作", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                DialogResult result = MessageBox.Show("右边的Unity工程目录,搜索文本框,有路径哦,请确认是否要搜索(*.json|*.lua|*.cs),估计搜索起来要20多秒_工程越大越耗时", "确认操作", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 // 根据用户的选择执行相应的操作
                 if (result == DialogResult.No)
                 {
@@ -392,7 +392,7 @@ namespace WinForms_FGUI
             SaveFguiPath();
 
             StringBuilder sbItem = new StringBuilder();
-            sbItem.AppendLine("已为倒序了 优先处理大的碎图");
+            sbItem.AppendLine($"已为倒序了 优先处理大的碎图 time={DateTime.Now.ToString("HH:mm:ss")}");
             sbItem.AppendLine(GetNoneUsingImg(directoryPath, pSearchPath));
             this.txtConsole.Text = sbItem.ToString();
         }
@@ -725,7 +725,7 @@ namespace WinForms_FGUI
                 return;
             }
             var sbOne = GetPackageDependTxt(packagePath, findPath);
-            sbOne.Insert(0, "有一些组件或页面没有被直接引用,程序去查下代码有无引用,若无引用,最好删除(此处[页面View]也会被输出的)\r\n因为:有些碎图被弃用的组件所引用着,只能删除了弃用的组件,查无引用的碎图才直观\r\n");
+            sbOne.Insert(0, $"有一些组件或页面没有被直接引用,程序去查下代码有无引用,若无引用,最好删除(此处[页面View]也会被输出的)\r\n因为:有些碎图被弃用的组件所引用着,只能删除了弃用的组件,查无引用的碎图才直观 time={DateTime.Now.ToString("HH:mm:ss")} \r\n");
             this.txtConsole.Text = sbOne.ToString();
         }
 
@@ -734,7 +734,7 @@ namespace WinForms_FGUI
             var subDirectories = Directory.GetDirectories(this.fguiProjectPath.Text);
 
             StringBuilder sbAll = new StringBuilder();
-            sbAll.AppendLine("有一些组件或页面没有被直接引用,程序去查下代码有无引用,若无引用,最好删除(此处[页面View]也会被输出的)\r\n因为:有些碎图被弃用的组件所引用着,只能删除了弃用的组件,查无引用的碎图才直观");
+            sbAll.AppendLine($"有一些组件或页面没有被直接引用,程序去查下代码有无引用,若无引用,最好删除(此处[页面View]也会被输出的)\r\n因为:有些碎图被弃用的组件所引用着,只能删除了弃用的组件,查无引用的碎图才直观 time={DateTime.Now.ToString("HH:mm:ss")}");
             foreach (string dir in subDirectories)
             {
                 sbAll.AppendLine($"\r\n{dir.Replace(this.fguiProjectPath.Text, "")} 包下");
