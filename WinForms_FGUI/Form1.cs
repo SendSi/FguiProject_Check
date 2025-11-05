@@ -51,7 +51,30 @@ namespace WinForms_FGUI
             {
                 txtContent = @"D:\WorkProject\UnityClient\Unity\FGUIProject\assets_*_Common;ItemPKG_*_Common_*_Common_*_D:\WorkProject\UnityClient\Unity\Assets";
                 File.WriteAllText(mSaveTxtPath, txtContent);
-                MessageBox.Show("首次进来,请先设置FGUI路径  使用过后,下次就不用再设置了");
+                // 显示 MessageBox
+                DialogResult result = MessageBox.Show(
+                    "首次进来，请先设置 FGUI 路径。使用过后，下次就不用再设置了。\n\n" +
+                    "首次点[确定]在网址看看解说吧----->另：记得点个赞",
+                    "提示",
+                    MessageBoxButtons.OK, // 提供“确定”和“取消”按钮
+                    MessageBoxIcon.Information
+                );
+                // 如果用户点击“确定”，则打开 GitHub 链接
+                if (result == DialogResult.OK)
+                {
+                    try
+                    {
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = "https://github.com/SendSi/FguiProject_Check",
+                            UseShellExecute = true  // 关键设置！
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"无法打开链接：{ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
             }
 
             var strs = txtContent.Split("_*_");
@@ -765,7 +788,7 @@ namespace WinForms_FGUI
                     string idValue = Regex.Match(strTxt[i], idPattern).Groups[1].Value;
                     string nameValue = Regex.Match(strTxt[i], namePattern).Groups[1].Value;
                     idNameDic[idValue] = nameValue;
-                }       
+                }
             }
 
             var bigXML = Directory.GetFiles(findPath, "*.xml", SearchOption.AllDirectories); // 获取以.xml为后缀的所有文件

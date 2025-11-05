@@ -50,6 +50,7 @@
             btn_ProjectImg = new Button();
             txtScriptJson = new TextBox();
             cbExtend = new CheckBox();
+            label1 = new Label();
             SuspendLayout();
             // 
             // fguiProjectPath
@@ -240,11 +241,21 @@
             cbExtend.Text = "只检测设为导出的";
             cbExtend.UseVisualStyleBackColor = true;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(703, 77);
+            label1.Name = "label1";
+            label1.Size = new Size(85, 17);
+            label1.TabIndex = 22;
+            label1.Text = "Unity工程目录";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 921);
+            Controls.Add(label1);
             Controls.Add(cbExtend);
             Controls.Add(txtScriptJson);
             Controls.Add(btn_ProjectImg);
@@ -266,7 +277,7 @@
             Controls.Add(btn_SelfImg);
             Controls.Add(fguiProjectPath);
             Name = "Form1";
-            Text = "Form1";
+            Text = "FGUI检测_工程越大越耗时";
             Load += Form1_Load;
             ResumeLayout(false);
             PerformLayout();
@@ -295,5 +306,6 @@
         private Button btn_ProjectImg;
         private TextBox txtScriptJson;
         private CheckBox cbExtend;
+        private Label label1;
     }
 }
