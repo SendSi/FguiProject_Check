@@ -8,6 +8,7 @@ namespace WinForms_FGUI
     public partial class Form1 : Form
     {
         string mSaveTxtPath;
+
         public Form1()
         {
             InitializeComponent();
@@ -67,7 +68,7 @@ namespace WinForms_FGUI
                         Process.Start(new ProcessStartInfo
                         {
                             FileName = "https://github.com/SendSi/FguiProject_Check",
-                            UseShellExecute = true  // 关键设置！
+                            UseShellExecute = true // 关键设置！
                         });
                     }
                     catch (Exception ex)
@@ -78,7 +79,7 @@ namespace WinForms_FGUI
             }
 
             var strs = txtContent.Split("_*_");
-            if (strs.Length < 5)//增加功能  _*_增加了框框,值不够  就重新设置一下默认值
+            if (strs.Length < 5) //增加功能  _*_增加了框框,值不够  就重新设置一下默认值
             {
                 txtContent = @"D:\WorkProject\UnityClient\Unity\FGUIProject\assets_*_Common;ItemPKG_*_Common_*_Common_*_D:\WorkProject\UnityClient\Unity\Assets";
                 File.WriteAllText(mSaveTxtPath, txtContent);
@@ -89,24 +90,31 @@ namespace WinForms_FGUI
             this.txt_Ignore.Text = strs[1];
             this.txtNoneImg.Text = strs[2];
             this.txtNoneCom.Text = strs[3];
-            this.txtScriptJson.Text = strs[4];//增加框框时
+            this.txtScriptJson.Text = strs[4]; //增加框框时
 
             txtNoneCom_TextChanged(null, null);
             txtNoneImg_TextChanged(null, null);
         }
 
-        private void btnPackage_Click(object sender, EventArgs e)
+        private async void btnPackage_Click(object sender, EventArgs e)
+        {
+            await ExecuteWithTimerAsync(btnPackage_Click22);
+        }
+
+        void btnPackage_Click22()
         {
             if (string.IsNullOrEmpty(this.txt_Ignore.Text))
             {
                 return;
             }
+
             var strs = this.txt_Ignore.Text.Split(";");
             mCommonNameUIdDic = new Dictionary<string, string>();
             for (int i = 0; i < strs.Length; i++)
             {
                 mCommonNameUIdDic.Add(strs[i], "");
             }
+
             SaveFguiPath();
             mPackageUIdNameDic.Clear();
             mNoneCommonUIdNameDic = new Dictionary<string, string>();
@@ -116,6 +124,7 @@ namespace WinForms_FGUI
                 MessageBox.Show("目录不存在");
                 return;
             }
+
             string[] xmlFiles = Directory.GetFiles(directoryPath, "*.xml", SearchOption.AllDirectories); // 获取以.xml为后缀的所有文件
             string packagePattern = @"id=""([^""]+)""";
             string[] strTxt;
@@ -141,6 +150,7 @@ namespace WinForms_FGUI
                     }
                 }
             }
+
             StringBuilder sb = new StringBuilder();
             foreach (var item in mPackageUIdNameDic)
             {
@@ -150,7 +160,12 @@ namespace WinForms_FGUI
             this.txtConsole.Text = sb.ToString();
         }
 
-        private void btnRef_Click(object sender, EventArgs e)
+        private async void btnRef_Click(object sender, EventArgs e)
+        {
+            await ExecuteWithTimerAsync(btnRef_Click22);
+        }
+
+        void btnRef_Click22()
         {
             btnPackage_Click(null, null);
 
@@ -301,9 +316,42 @@ namespace WinForms_FGUI
             }
         }
 
+        private async Task ExecuteWithTimerAsync(Action action, Action<Exception> errorHandler = null)
+        {
+            var originalTitle = this.Text;
+            this.Text = $"{originalTitle}（开始啦）";
+            var timer = new System.Windows.Forms.Timer { Interval = 1000 };
+            int elapsedSeconds = 0;
+            timer.Tick += (s, ev) =>
+            {
+                elapsedSeconds++;
+                this.Text = $"{originalTitle}（执行第{elapsedSeconds}秒）    这里在读秒就别点其他按钮咯";
+            };
+            try
+            {
+                timer.Start();
+                await Task.Run(action);
+            }
+            catch (Exception ex)
+            {
+                errorHandler?.Invoke(ex); // 自定义错误处理
+                if (errorHandler == null) // 默认处理
+                    MessageBox.Show($"操作失败：{ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                timer.Stop();
+                this.Text = originalTitle;
+            }
+        }
 
 
-        private void checkImgBtn_Click(object sender, EventArgs e)
+        private async void checkImgBtn_Click(object sender, EventArgs e)
+        {
+            await ExecuteWithTimerAsync(checkImgBtn_Click22);
+        }
+
+        void checkImgBtn_Click22()
         {
             string inputDirectory = this.fguiProjectPath.Text; // -- @"C:\TestImg";       
 
@@ -366,18 +414,23 @@ namespace WinForms_FGUI
             this.txtConsole.Text = sb.ToString();
         }
 
-        private void btn_SelfImg_Click(object sender, EventArgs e)
+        private async void btn_SelfImg_Click(object sender, EventArgs e)
         {
-            if (CheckTextPathIsExist() == false) return;
-            var serachPath = $"{this.fguiProjectPath.Text}/{this.txtNoneImg.Text}";
-            SearchImg(serachPath);
+            await ExecuteWithTimerAsync(() =>
+            {
+                if (CheckTextPathIsExist() == false) return;
+                var serachPath = $"{this.fguiProjectPath.Text}/{this.txtNoneImg.Text}";
+                SearchImg(serachPath);
+            });
         }
+
         void SearchImg(string pSearchPath)
         {
             if (this.txt_Ignore.Text.Length <= 2)
             {
                 return;
             }
+
             var ignoreList = this.txt_Ignore.Text.Split(";");
             string directoryPath;
             if (this.txtNoneImg.Text.Length <= 2)
@@ -433,9 +486,11 @@ namespace WinForms_FGUI
                     {
                         return lineNumber;
                     }
+
                     lineNumber++;
                 }
             }
+
             return -1;
         }
 
@@ -454,7 +509,7 @@ namespace WinForms_FGUI
             string idPattern = @"id=""([^""]+)""";
             string namePattern = @"name=""([^""]+)""";
             string pathPattern = @"path=""([^""]+)""";
-            bool checkExport = cbExtend.Checked;//是否检查导出
+            bool checkExport = cbExtend.Checked; //是否检查导出
             foreach (string file in targetXmlFiles)
             {
                 if (file.Contains("package.xml"))
@@ -463,8 +518,8 @@ namespace WinForms_FGUI
                     packageId = string.Empty;
                     for (int i = 0; i < strTxt.Length; i++)
                     {
-                        if ((checkExport == false && strTxt[i].Contains("image id")) ||//忽略 是否导出(全检)
-                           (checkExport == true && strTxt[i].Contains("image id") && strTxt[i].Contains("exported=")))  //仅检测  导出的
+                        if ((checkExport == false && strTxt[i].Contains("image id")) || //忽略 是否导出(全检)
+                            (checkExport == true && strTxt[i].Contains("image id") && strTxt[i].Contains("exported="))) //仅检测  导出的
                         {
                             string idValue = Regex.Match(strTxt[i], idPattern).Groups[1].Value;
                             string nameValue = Regex.Match(strTxt[i], namePattern).Groups[1].Value;
@@ -482,13 +537,13 @@ namespace WinForms_FGUI
                 }
             }
 
-            string fntPattern = @"img=(\w+) xoffset";   //获取以.fnt为后缀的所有文件  艺术字体
+            string fntPattern = @"img=(\w+) xoffset"; //获取以.fnt为后缀的所有文件  艺术字体
             foreach (string file in fntFiles)
             {
                 strTxt = File.ReadAllLines(file);
                 for (int i = 0; i < strTxt.Length; i++)
                 {
-                    if (strTxt[i].Contains("img="))//char id=43 img=uzxrck xoffset=0 yoffset=0 xadvance=0
+                    if (strTxt[i].Contains("img=")) //char id=43 img=uzxrck xoffset=0 yoffset=0 xadvance=0
                     {
                         string idValue = Regex.Match(strTxt[i], fntPattern).Groups[1].Value;
                         if (idNameDic.ContainsKey(idValue) == true)
@@ -607,8 +662,9 @@ namespace WinForms_FGUI
                 }
             }
             else
-            {//需去检测文本(脚本或json)
-             // 获取所有 .cs 和 .json 和 .lua 文件
+            {
+                //需去检测文本(脚本或json)
+                // 获取所有 .cs 和 .json 和 .lua 文件
                 var files = Directory.GetFiles(this.txtScriptJson.Text, "*.*", SearchOption.AllDirectories).Where(file => file.EndsWith(".cs", StringComparison.OrdinalIgnoreCase) || file.EndsWith(".json", StringComparison.OrdinalIgnoreCase) || file.EndsWith(".lua", StringComparison.OrdinalIgnoreCase)).ToArray();
                 foreach (var item in idNameDic)
                 {
@@ -636,13 +692,17 @@ namespace WinForms_FGUI
             {
                 sb.AppendLine(item.outLineTxt);
             }
+
             return sb.ToString();
         }
 
-        private void btn_GlobalImg_Click(object sender, EventArgs e)
+        private async void btn_GlobalImg_Click(object sender, EventArgs e)
         {
-            if (CheckTextPathIsExist() == false) return;
-            SearchImg(this.fguiProjectPath.Text);
+            await ExecuteWithTimerAsync(() =>
+            {
+                if (CheckTextPathIsExist() == false) return;
+                SearchImg(this.fguiProjectPath.Text);
+            });
         }
 
         bool CheckTextPathIsExist()
@@ -652,10 +712,16 @@ namespace WinForms_FGUI
                 MessageBox.Show("右边的搜索目录 [非真实目录]   可悬停在输入框,看其作用");
                 return false;
             }
+
             return true;
         }
 
-        private void btn_ProjectImg_Click(object sender, EventArgs e)
+        private async void btn_ProjectImg_Click(object sender, EventArgs e)
+        {
+            await ExecuteWithTimerAsync(btn_ProjectImg_Click22);
+        }
+
+        void btn_ProjectImg_Click22()
         {
             if (CheckTextPathIsExist() == false) return;
 
@@ -689,6 +755,7 @@ namespace WinForms_FGUI
                     }
                 }
             }
+
             this.txtConsole.Text = sbAll.ToString();
         }
 
@@ -696,6 +763,7 @@ namespace WinForms_FGUI
         {
             public int size;
             public List<string> imgs;
+
             public IgnoreImg(int size, List<string> tags)
             {
                 this.size = size;
@@ -715,14 +783,14 @@ namespace WinForms_FGUI
             }
         }
 
-        private void btn_SelfCom_Click(object sender, EventArgs e)
+        private async void btn_SelfCom_Click(object sender, EventArgs e)
         {
-            DependentCom($"{this.fguiProjectPath.Text}\\{this.txtNoneCom.Text}");
+            await ExecuteWithTimerAsync(() => { DependentCom($"{this.fguiProjectPath.Text}\\{this.txtNoneCom.Text}"); });
         }
 
-        private void btn_GlobalCom_Click(object sender, EventArgs e)
+        private async void btn_GlobalCom_Click(object sender, EventArgs e)
         {
-            DependentCom(this.fguiProjectPath.Text);
+            await ExecuteWithTimerAsync(() => { DependentCom(this.fguiProjectPath.Text); });
         }
 
         bool IsDirectory(string path)
@@ -732,6 +800,7 @@ namespace WinForms_FGUI
                 MessageBox.Show("目录不存在");
                 return false;
             }
+
             return true;
         }
 
@@ -744,15 +813,21 @@ namespace WinForms_FGUI
 
             if (File.Exists(packagePath) == false && string.IsNullOrEmpty(this.txtNoneCom.Text) == false)
             {
-                MessageBox.Show("目录不存在,请检查 是否输入正确");//填了,没填对
+                MessageBox.Show("目录不存在,请检查 是否输入正确"); //填了,没填对
                 return;
             }
+
             var sbOne = GetPackageDependTxt(packagePath, findPath);
             sbOne.Insert(0, $"有一些组件或页面没有被直接引用,程序去查下代码有无引用,若无引用,最好删除(此处[页面View]也会被输出的)\r\n因为:有些碎图被弃用的组件所引用着,只能删除了弃用的组件,查无引用的碎图才直观 time={DateTime.Now.ToString("HH:mm:ss")} \r\n");
             this.txtConsole.Text = sbOne.ToString();
         }
 
-        private void btn_ProjectCom_Click(object sender, EventArgs e)
+        private async void btn_ProjectCom_Click(object sender, EventArgs e)
+        {
+            await ExecuteWithTimerAsync(btn_ProjectCom_Click22);
+        }
+
+        void btn_ProjectCom_Click22()
         {
             var subDirectories = Directory.GetDirectories(this.fguiProjectPath.Text);
 
@@ -768,6 +843,7 @@ namespace WinForms_FGUI
                     sbAll.Append(sbOne);
                 }
             }
+
             this.txtConsole.Text = sbAll.ToString();
         }
 
@@ -776,14 +852,14 @@ namespace WinForms_FGUI
             SaveFguiPath();
             var strTxt = File.ReadAllLines(packagePath);
 
-            bool checkExport = cbExtend.Checked;//是否检查导出
+            bool checkExport = cbExtend.Checked; //是否检查导出
             Dictionary<string, string> idNameDic = new Dictionary<string, string>();
             string idPattern = @"id=""([^""]+)""";
             string namePattern = @"name=""([^""]+)""";
             for (int i = 0; i < strTxt.Length; i++)
             {
-                if ((checkExport == false && strTxt[i].Contains("component id")) ||//忽略 是否导出(全检)
-                    (checkExport == true && strTxt[i].Contains("component id") && strTxt[i].Contains("exported=")))  //仅检测  导出的
+                if ((checkExport == false && strTxt[i].Contains("component id")) || //忽略 是否导出(全检)
+                    (checkExport == true && strTxt[i].Contains("component id") && strTxt[i].Contains("exported="))) //仅检测  导出的
                 {
                     string idValue = Regex.Match(strTxt[i], idPattern).Groups[1].Value;
                     string nameValue = Regex.Match(strTxt[i], namePattern).Groups[1].Value;
@@ -819,6 +895,7 @@ namespace WinForms_FGUI
                     sb.AppendLine(item.Value);
                 }
             }
+
             return sb;
         }
 
@@ -835,7 +912,6 @@ namespace WinForms_FGUI
             this.btn_GlobalImg.Visible = (this.txtNoneImg.Text.Length > 0);
             this.btn_SelfImg.Visible = (this.txtNoneImg.Text.Length > 0);
         }
-
     }
 
     public class MySortPng
