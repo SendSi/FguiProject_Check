@@ -184,7 +184,7 @@ namespace WinForms_FGUI
 
         void btnRef_Click22()
         {
-            btnPackage_Click(null, null);
+            btnPackage_Click22();
 
             mXmlListDic.Clear();
             string directoryPath = this.fguiProjectPath.Text; // 目录路径
@@ -313,7 +313,18 @@ namespace WinForms_FGUI
                 sb.AppendLine(item.Key + " 依赖了其他业务包 : " + str);
             }
 
-            this.txtConsole.Text = sb.ToString() + "\r\n\r\n修正时,看这个方便点xml-->元素\r\n" + contentLog;
+            //this.txtConsole.Text = sb.ToString() + "\r\n\r\n修正时,看这个方便点xml-->元素\r\n" + contentLog;
+            if (this.txtConsole.InvokeRequired)
+            {
+                this.txtConsole.Invoke(new Action(() =>
+                {
+                    this.txtConsole.Text = sb.ToString() + "\r\n\r\n修正时,看这个方便点xml-->元素\r\n" + contentLog;
+                }));
+            }
+            else
+            {
+                this.txtConsole.Text = sb.ToString() + "\r\n\r\n修正时,看这个方便点xml-->元素\r\n" + contentLog;
+            }
         }
 
         void AddDicTry(string selfPack, string xmlName, string Value)
