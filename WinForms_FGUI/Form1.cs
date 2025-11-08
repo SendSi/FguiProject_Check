@@ -157,8 +157,25 @@ namespace WinForms_FGUI
                 sb.AppendLine(item.Key + "__" + item.Value); // +";");
             }
 
-            this.txtConsole.Text = sb.ToString();
+            //this.txtConsole.Text = sb.ToString();
+            SetConsoleTxt(sb);
         }
+
+        void SetConsoleTxt(StringBuilder sb)
+        {
+            if (this.txtConsole.InvokeRequired)
+            {
+                this.txtConsole.Invoke(new Action(() =>
+                {
+                    this.txtConsole.Text = sb.ToString();
+                }));
+            }
+            else
+            {
+                this.txtConsole.Text = sb.ToString();
+            }
+        }
+
 
         private async void btnRef_Click(object sender, EventArgs e)
         {
@@ -411,7 +428,8 @@ namespace WinForms_FGUI
                 sb.AppendLine("");
             }
 
-            this.txtConsole.Text = sb.ToString();
+            //this.txtConsole.Text = sb.ToString();
+            SetConsoleTxt(sb);
         }
 
         private async void btn_SelfImg_Click(object sender, EventArgs e)
@@ -470,7 +488,8 @@ namespace WinForms_FGUI
             StringBuilder sbItem = new StringBuilder();
             sbItem.AppendLine($"已为倒序了 优先处理大的碎图 time={DateTime.Now.ToString("HH:mm:ss")}");
             sbItem.AppendLine(GetNoneUsingImg(directoryPath, pSearchPath));
-            this.txtConsole.Text = sbItem.ToString();
+            //this.txtConsole.Text = sbItem.ToString();
+            SetConsoleTxt(sbItem);
         }
 
         /// <summary>         搜索文件夹中所有文件的指定文本     若无,则返回-1    </summary> 
@@ -819,7 +838,8 @@ namespace WinForms_FGUI
 
             var sbOne = GetPackageDependTxt(packagePath, findPath);
             sbOne.Insert(0, $"有一些组件或页面没有被直接引用,程序去查下代码有无引用,若无引用,最好删除(此处[页面View]也会被输出的)\r\n因为:有些碎图被弃用的组件所引用着,只能删除了弃用的组件,查无引用的碎图才直观 time={DateTime.Now.ToString("HH:mm:ss")} \r\n");
-            this.txtConsole.Text = sbOne.ToString();
+            //this.txtConsole.Text = sbOne.ToString();
+            SetConsoleTxt(sbOne);
         }
 
         private async void btn_ProjectCom_Click(object sender, EventArgs e)
